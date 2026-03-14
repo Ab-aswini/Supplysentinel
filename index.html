@@ -1254,6 +1254,124 @@
     color: var(--text);
   }
 
+  /* PHOTO UPLOAD */
+  .photo-upload-area {
+    border: 2px dashed var(--border2);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: var(--surface2);
+    position: relative;
+  }
+  .photo-upload-area:hover {
+    border-color: var(--accent);
+    background: rgba(255,77,28,0.04);
+  }
+  .photo-upload-area.has-photo {
+    border-color: var(--green);
+    border-style: solid;
+    background: rgba(0,230,118,0.04);
+  }
+  .photo-upload-area .upload-icon {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+  .photo-upload-area .upload-text {
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .photo-upload-area .upload-hint {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+  .photo-upload-area input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .photo-preview-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .photo-thumb {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border2);
+  }
+  .photo-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .photo-thumb .remove-photo {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    border: none;
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .photo-thumb .remove-photo:hover {
+    background: var(--red);
+  }
+  /* Photo in feed */
+  .report-photos {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .report-photos .feed-photo {
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid var(--border2);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .report-photos .feed-photo:hover {
+    transform: scale(1.1);
+  }
+  /* Photo lightbox */
+  .photo-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0,0,0,0.9);
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .photo-lightbox.open {
+    display: flex;
+  }
+  .photo-lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+
   /* EMPTY STATE */
   .empty-state {
     text-align: center;
@@ -1409,6 +1527,19 @@
         </div>
       </div>
 
+      <div class="form-row">
+        <div class="form-group full">
+          <label data-i18n="lbl_photo">📷 Photo Evidence (Optional)</label>
+          <div class="photo-upload-area" id="photo-upload-area">
+            <div class="upload-icon">📸</div>
+            <div class="upload-text" data-i18n="photo_upload_text">Tap to add photo of receipt or price tag</div>
+            <div class="upload-hint" data-i18n="photo_upload_hint">Max 3 photos · JPG/PNG · Under 2MB each</div>
+            <input type="file" id="f-photos" accept="image/jpeg,image/png,image/webp" multiple onchange="handlePhotoUpload(event)">
+          </div>
+          <div class="photo-preview-row" id="photo-preview-row"></div>
+        </div>
+      </div>
+
       <div class="submit-row">
         <button class="btn-submit" onclick="submitReport()" data-i18n="btn_submit">⚑ Submit Report</button>
         <button class="btn-secondary" onclick="clearForm()" data-i18n="btn_clear">Clear</button>
@@ -1534,6 +1665,11 @@
     ⭐ Star on GitHub
   </a>
 </footer>
+
+<!-- PHOTO LIGHTBOX -->
+<div class="photo-lightbox" id="photo-lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="Evidence photo">
+</div>
 
 <!-- TOAST -->
 <div class="toast" id="toast">
@@ -1695,6 +1831,14 @@ const i18n = {
     ai_q_rights: 'What are my consumer rights?',
     ai_q_action: 'What action can I take against overcharging?',
     ai_q_predict: 'Will prices go down soon?',
+    // Photo upload
+    lbl_photo: '📷 Photo Evidence (Optional)',
+    photo_upload_text: 'Tap to add photo of receipt or price tag',
+    photo_upload_hint: 'Max 3 photos · JPG/PNG · Under 2MB each',
+    photo_too_large: 'Photo too large (max 2MB)',
+    photo_max: 'Maximum 3 photos allowed',
+    photo_added: 'Photo added',
+    photo_evidence: 'photo evidence',
   },
   or: {
     // Header
@@ -1809,6 +1953,14 @@ const i18n = {
     ai_q_rights: 'ମୋର ଗ୍ରାହକ ଅଧିକାର କ\'ଣ?',
     ai_q_action: 'ଅଧିକ ମୂଲ୍ୟ ବିରୁଦ୍ଧରେ ମୁଁ କ\'ଣ କାର୍ଯ୍ୟ କରିପାରିବି?',
     ai_q_predict: 'ମୂଲ୍ୟ ଶୀଘ୍ର କମିବ କି?',
+    // Photo upload
+    lbl_photo: '📷 ଫଟୋ ପ୍ରମାଣ (ଐଚ୍ଛିକ)',
+    photo_upload_text: 'ରସିଦ ବା ମୂଲ୍ୟ ଟ୍ୟାଗର ଫଟୋ ଯୋଡ଼ନ୍ତୁ',
+    photo_upload_hint: 'ସର୍ବାଧିକ ୩ ଫଟୋ · JPG/PNG · ପ୍ରତ୍ୟେକ 2MB ଠାରୁ କମ',
+    photo_too_large: 'ଫଟୋ ବହୁତ ବଡ଼ (ସର୍ବାଧିକ 2MB)',
+    photo_max: 'ସର୍ବାଧିକ ୩ ଫଟୋ ଅନୁମୋଦିତ',
+    photo_added: 'ଫଟୋ ଯୋଡ଼ାଗଲା',
+    photo_evidence: 'ଫଟୋ ପ୍ରମାଣ',
   }
 };
 
@@ -2116,6 +2268,7 @@ let allReports = [];
 let votedReports = new Set(JSON.parse(localStorage.getItem('ss_voted') || '[]'));
 let currentFilter = 'all';
 let areaFilter = null;
+let pendingPhotos = []; // base64 data URLs for current form
 
 // ============================================================
 // MFI & SUPPLY HEALTH CALCULATION
@@ -2288,8 +2441,10 @@ function renderFeed(filter = 'all') {
         <div class="report-tags">
           <span class="tag tag-location">📍 ${r.area}</span>
           <span class="tag tag-commodity">${r.severity.toUpperCase()}</span>
+          ${r.photos && r.photos.length > 0 ? `<span class="tag" style="background:rgba(0,230,118,0.08);color:var(--green);border:1px solid rgba(0,230,118,0.2);">📷 ${r.photos.length} ${t('photo_evidence')}</span>` : ''}
           ${r.notes ? `<span class="tag" style="background:rgba(255,255,255,0.04);color:var(--text3);border:1px solid var(--border2);">"${r.notes.substring(0,40)}${r.notes.length > 40 ? '...' : ''}"</span>` : ''}
         </div>
+        ${r.photos && r.photos.length > 0 ? `<div class="report-photos">${r.photos.map((p, pi) => `<img class="feed-photo" src="${p}" alt="Evidence" onclick="openLightbox(this.src)">`).join('')}</div>` : ''}
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
         <div class="report-time">${timeAgo}</div>
@@ -2433,7 +2588,8 @@ function submitReport() {
     notes,
     time: Date.now(),
     upvotes: 0,
-    icon: iconData ? iconData.icon : '📦'
+    icon: iconData ? iconData.icon : '📦',
+    photos: pendingPhotos.length > 0 ? [...pendingPhotos] : []
   };
 
   allReports.unshift(newReport);
@@ -2467,6 +2623,97 @@ function submitReport() {
   showToast('✅', t('toast_submitted'), `${commodity} +${pct}% ${t('toast_above_mrp')} ${area}. ${t('toast_thank')}`);
 }
 
+// ============================================================
+// PHOTO EVIDENCE UPLOAD
+// ============================================================
+
+function handlePhotoUpload(event) {
+  const files = Array.from(event.target.files);
+  const MAX_PHOTOS = 3;
+  const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+
+  for (const file of files) {
+    if (pendingPhotos.length >= MAX_PHOTOS) {
+      showToast('📷', t('photo_max'), '');
+      break;
+    }
+    if (file.size > MAX_SIZE) {
+      showToast('⚠️', t('photo_too_large'), file.name);
+      continue;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      // Compress the image to reduce localStorage size
+      compressImage(e.target.result, 800, 0.7, (compressed) => {
+        pendingPhotos.push(compressed);
+        renderPhotoPreview();
+        updateUploadAreaState();
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+  // Reset input so same file can be selected again
+  event.target.value = '';
+}
+
+function compressImage(dataUrl, maxWidth, quality, callback) {
+  const img = new Image();
+  img.onload = function() {
+    const canvas = document.createElement('canvas');
+    let w = img.width, h = img.height;
+    if (w > maxWidth) {
+      h = Math.round(h * maxWidth / w);
+      w = maxWidth;
+    }
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    callback(canvas.toDataURL('image/jpeg', quality));
+  };
+  img.src = dataUrl;
+}
+
+function renderPhotoPreview() {
+  const row = document.getElementById('photo-preview-row');
+  row.innerHTML = pendingPhotos.map((src, i) => `
+    <div class="photo-thumb">
+      <img src="${src}" alt="Evidence ${i + 1}">
+      <button class="remove-photo" onclick="removePhoto(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removePhoto(index) {
+  pendingPhotos.splice(index, 1);
+  renderPhotoPreview();
+  updateUploadAreaState();
+}
+
+function updateUploadAreaState() {
+  const area = document.getElementById('photo-upload-area');
+  if (pendingPhotos.length > 0) {
+    area.classList.add('has-photo');
+  } else {
+    area.classList.remove('has-photo');
+  }
+}
+
+function openLightbox(src) {
+  const lb = document.getElementById('photo-lightbox');
+  document.getElementById('lightbox-img').src = src;
+  lb.classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('photo-lightbox').classList.remove('open');
+}
+
+// Close lightbox on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+});
+
 function clearForm() {
   document.getElementById('f-commodity').value = '';
   document.getElementById('f-shop').value = '';
@@ -2477,6 +2724,9 @@ function clearForm() {
   document.getElementById('f-notes').value = '';
   document.getElementById('f-diff').textContent = '—';
   document.getElementById('f-diff').style.color = 'var(--text3)';
+  pendingPhotos = [];
+  renderPhotoPreview();
+  updateUploadAreaState();
 }
 
 // ============================================================
