@@ -123,6 +123,42 @@
     gap: 16px;
   }
 
+  .data-source-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+  .data-source-badge.live {
+    border-color: rgba(0,230,118,0.3);
+    color: var(--green);
+    background: rgba(0,230,118,0.06);
+  }
+  .data-source-badge .ds-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+  }
+  .data-source-badge.live .ds-dot {
+    background: var(--green);
+    box-shadow: 0 0 6px rgba(0,230,118,0.5);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
   .crisis-badge {
     display: flex;
     align-items: center;
@@ -1083,6 +1119,10 @@
     <div class="logo-text">Supply<span>Sentinel</span></div>
   </div>
   <div class="header-right">
+    <div class="data-source-badge" id="data-source-badge">
+      <div class="ds-dot"></div>
+      <span>Local Data</span>
+    </div>
     <div class="crisis-badge">
       <div class="crisis-dot"></div>
       LPG Crisis Active
@@ -1319,6 +1359,13 @@
 
 const CONFIG_PATH = 'config/balangir.json';
 
+// Google Sheets Backend URL (set this after deploying Code.gs)
+// Leave empty to use localStorage only
+const SHEETS_API_URL = '';  // e.g. 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec'
+
+// Data source tracking
+let dataSource = 'local'; // 'local' or 'live'
+
 // These will be populated from config (with hardcoded fallbacks)
 let DISTRICT_CONFIG = null;
 let OFFICIAL_PRICES = {};
@@ -1490,6 +1537,66 @@ function loadReports() {
 
 function saveReports(reports) {
   localStorage.setItem('ss_reports', JSON.stringify(reports));
+}
+
+// ============================================================
+// GOOGLE SHEETS API FUNCTIONS
+// ============================================================
+
+async function fetchReportsFromSheets() {
+  if (!SHEETS_API_URL) return null;
+  try {
+    const resp = await fetch(SHEETS_API_URL + '?action=reports');
+    if (!resp.ok) throw new Error('Sheets API returned ' + resp.status);
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
+    console.log(`[SupplySentinel] Fetched ${data.count} reports from Google Sheets`);
+    return data.reports || [];
+  } catch (err) {
+    console.warn('[SupplySentinel] Sheets fetch failed:', err.message);
+    return null;
+  }
+}
+
+async function postReportToSheets(report) {
+  if (!SHEETS_API_URL) return false;
+  try {
+    const resp = await fetch(SHEETS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(report),
+      mode: 'no-cors' // Apps Script redirects; no-cors handles this
+    });
+    // With no-cors, we can't read the response, but the request is sent
+    console.log('[SupplySentinel] Report posted to Google Sheets');
+    return true;
+  } catch (err) {
+    console.warn('[SupplySentinel] Sheets post failed:', err.message);
+    return false;
+  }
+}
+
+function mergeReports(localReports, sheetsReports) {
+  // Merge by ID — sheets reports take priority, then add local-only ones
+  const merged = new Map();
+  sheetsReports.forEach(r => merged.set(r.id, r));
+  localReports.forEach(r => {
+    if (!merged.has(r.id)) merged.set(r.id, r);
+  });
+  return Array.from(merged.values()).sort((a, b) => (b.time || 0) - (a.time || 0));
+}
+
+function updateDataSourceBadge(source) {
+  dataSource = source;
+  const badge = document.getElementById('data-source-badge');
+  if (!badge) return;
+  if (source === 'live') {
+    badge.classList.add('live');
+    badge.innerHTML = '<div class="ds-dot"></div><span>Live Data</span>';
+  } else {
+    badge.classList.remove('live');
+    badge.innerHTML = '<div class="ds-dot"></div><span>Local Data</span>';
+  }
 }
 
 let allReports = [];
@@ -1819,6 +1926,9 @@ function submitReport() {
   allReports.unshift(newReport);
   saveReports(allReports);
 
+  // Also post to Google Sheets (fire-and-forget)
+  postReportToSheets(newReport);
+
   // Update market prices if reported price is higher than current market price
   if (commodity !== 'Other' && MARKET_PRICES[commodity] !== undefined && reported > MARKET_PRICES[commodity]) {
     MARKET_PRICES[commodity] = reported;
@@ -2078,11 +2188,33 @@ async function init() {
     useFallbackData();
   }
 
-  // Load reports from localStorage or use seed data
-  allReports = loadReports();
-  if (allReports.length === 0 && SEED_REPORTS.length > 0) {
-    allReports = SEED_REPORTS;
-    saveReports(allReports);
+  // Load reports: try Google Sheets first, fallback to localStorage
+  const localReports = loadReports();
+
+  if (SHEETS_API_URL) {
+    // Try fetching from Sheets
+    const sheetsReports = await fetchReportsFromSheets();
+    if (sheetsReports && sheetsReports.length > 0) {
+      allReports = mergeReports(localReports, sheetsReports);
+      saveReports(allReports); // cache merged data locally
+      updateDataSourceBadge('live');
+    } else if (localReports.length > 0) {
+      allReports = localReports;
+      updateDataSourceBadge('local');
+    } else if (SEED_REPORTS.length > 0) {
+      allReports = SEED_REPORTS;
+      saveReports(allReports);
+      updateDataSourceBadge('local');
+    }
+  } else {
+    // No Sheets URL configured — use localStorage only
+    if (localReports.length > 0) {
+      allReports = localReports;
+    } else if (SEED_REPORTS.length > 0) {
+      allReports = SEED_REPORTS;
+      saveReports(allReports);
+    }
+    updateDataSourceBadge('local');
   }
 
   // Render everything

@@ -46,8 +46,64 @@ Get SupplySentinel running for your district in under 10 minutes. Zero cost. No 
 2. Source: **Deploy from a branch** → **main** → **/ (root)** → **Save**
 3. Live at: `https://YOUR-USERNAME.github.io/Supplysentinel`
 
-## Google Sheets Backend Setup (Coming in v1.0)
-Instructions for setting up the Google Sheets real-time database will be added here.
+## Google Sheets Backend Setup (Optional — Shared Database)
+
+By default, SupplySentinel stores reports in `localStorage` (per-browser). To enable a **shared, persistent database** so all visitors see the same reports, set up the free Google Sheets backend.
+
+### Step A: Create a Google Sheet
+1. Go to [sheets.google.com](https://sheets.google.com) and create a new blank spreadsheet
+2. Name it **"SupplySentinel Reports"** (or anything you like)
+3. Keep the default "Sheet1" tab — the script will create a "Reports" tab automatically
+
+### Step B: Add the Apps Script
+1. In your spreadsheet, go to **Extensions → Apps Script**
+2. Delete any existing code in the editor
+3. Copy the entire contents of `google-apps-script/Code.gs` from this repo and paste it in
+4. Click **Save** (Ctrl+S) and name the project **"SupplySentinel Backend"**
+
+### Step C: Run Initial Setup
+1. In the Apps Script editor, select the **`setup`** function from the dropdown (next to the Run button)
+2. Click **Run**
+3. When prompted, **authorize** the script to access your spreadsheet
+4. Check the **Execution log** — you should see "Sheet 'Reports' is ready!"
+
+### Step D: Deploy as Web App
+1. Click **Deploy → New deployment**
+2. Click the gear icon next to "Select type" → choose **Web app**
+3. Set these options:
+   - **Description**: "SupplySentinel API v1"
+   - **Execute as**: **Me** (your Google account)
+   - **Who has access**: **Anyone**
+4. Click **Deploy**
+5. Copy the **Web app URL** — it looks like:
+   ```
+   https://script.google.com/macros/s/AKfycbx.../exec
+   ```
+
+### Step E: Connect to Your Frontend
+1. Open `index.html` in your repo
+2. Find the line:
+   ```javascript
+   const SHEETS_API_URL = '';
+   ```
+3. Paste your Web app URL:
+   ```javascript
+   const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbx.../exec';
+   ```
+4. Commit and push. Your site now reads/writes to Google Sheets!
+
+### How It Works
+- **GET `?action=reports`** — Returns all reports as JSON
+- **GET `?action=stats`** — Returns aggregated statistics with MFI score
+- **POST (JSON body)** — Adds a new report row to the sheet
+
+The frontend tries Sheets first, falls back to localStorage if the API is unavailable. A **"Live Data"** badge appears in the header when Sheets is connected.
+
+### Troubleshooting
+- **"Authorization required"**: Re-run the `setup` function and accept permissions
+- **CORS errors**: Make sure "Who has access" is set to "Anyone" (not "Anyone with Google account")
+- **No data showing**: Check the Execution log in Apps Script for errors
+- **Want to update the script?**: Go to Deploy → Manage deployments → Edit → select "New version" → Deploy
 
 ## EmailJS Setup (Coming in v1.0)
 Instructions for direct complaint email functionality will be added here.
