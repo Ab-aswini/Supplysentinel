@@ -1894,8 +1894,14 @@
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-left">
-    SupplySentinel v1.0 — Open Source · <a href="https://github.com/Ab-aswini/Supplysentinel" target="_blank" rel="noopener">GitHub</a> · <a href="https://supplysentinel.netlify.app" target="_blank" rel="noopener">supplysentinel.netlify.app</a> · Built for Balangir, Odisha
-    <br><a href="#" onclick="clearAllData(); return false;" style="font-size:11px; color:var(--text3); opacity:0.6;">Reset Demo Data</a>
+    SupplySentinel v1.0 — Open Source · <a href="https://github.com/Ab-aswini/Supplysentinel" target="_blank" rel="noopener">GitHub</a> · <a href="https://supplysentinel.netlify.app" target="_blank" rel="noopener">supplysentinel.netlify.app</a>
+    <br>
+    <span id="district-selector-row" style="display:none;">
+      <select id="district-selector" onchange="switchDistrict(this.value)" style="background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:3px 8px;color:var(--text2);font-size:11px;font-family:var(--mono);cursor:pointer;margin-right:8px;">
+      </select>
+    </span>
+    <a href="https://github.com/Ab-aswini/Supplysentinel/fork" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent);text-decoration:none;" data-i18n="footer_fork">🍴 Deploy for your district</a>
+    · <a href="#" onclick="clearAllData(); return false;" style="font-size:11px; color:var(--text3); opacity:0.6;" data-i18n="footer_reset">Reset Demo Data</a>
   </div>
   <a href="https://github.com/Ab-aswini/Supplysentinel" target="_blank" rel="noopener" class="github-btn">
     ⭐ Star on GitHub
@@ -1945,11 +1951,18 @@
 // ============================================================
 // CONFIG-DRIVEN DATA STORE
 // ============================================================
-// All district-specific data is loaded from config/balangir.json
-// To deploy for your district: copy config/example-cuttack.json,
-// rename it, edit 5 fields, and update CONFIG_PATH below.
+// All district-specific data is loaded from a config JSON file.
+// To deploy for your district: copy config/_template.json,
+// rename it, edit the fields, and update DEFAULT_DISTRICT below.
+// Or use ?district=name in the URL to switch configs dynamically.
 
-const CONFIG_PATH = 'config/balangir.json';
+const DEFAULT_DISTRICT = 'balangir';  // Change this for your fork
+const CONFIG_PATH = (() => {
+  const params = new URLSearchParams(window.location.search);
+  const d = params.get('district');
+  if (d) return `config/${d.toLowerCase().replace(/[^a-z0-9-]/g, '')}.json`;
+  return `config/${DEFAULT_DISTRICT}.json`;
+})();
 
 // Google Sheets Backend URL (set this after deploying Code.gs)
 // Leave empty to use localStorage only
@@ -2070,6 +2083,7 @@ const i18n = {
     footer_built: 'Built for Balangir, Odisha',
     footer_reset: 'Reset Demo Data',
     footer_star: '⭐ Star on GitHub',
+    footer_fork: '🍴 Deploy for your district',
     // AI Explainer
     ai_title: 'AI Supply Explainer',
     ai_ask: '✨ Ask AI',
@@ -2213,6 +2227,7 @@ const i18n = {
     footer_built: 'ବଲାଙ୍ଗୀର, ଓଡ଼ିଶା ପାଇଁ ନିର୍ମିତ',
     footer_reset: 'ଡେମୋ ଡାଟା ରିସେଟ',
     footer_star: '⭐ GitHub ରେ ଷ୍ଟାର',
+    footer_fork: '🍴 ଆପଣଙ୍କ ଜିଲ୍ଲା ପାଇଁ ସ୍ଥାପନ କରନ୍ତୁ',
     // AI Explainer
     ai_title: 'AI ଯୋଗାଣ ବ୍ୟାଖ୍ୟାକାରୀ',
     ai_ask: '✨ AI ପଚାରନ୍ତୁ',
@@ -3574,6 +3589,45 @@ window.addEventListener('offline', () => {
 });
 
 // ============================================================
+// ============================================================
+// MULTI-DISTRICT SUPPORT
+// ============================================================
+
+function switchDistrict(districtId) {
+  if (!districtId) return;
+  const url = new URL(window.location);
+  url.searchParams.set('district', districtId);
+  window.location.href = url.toString();
+}
+
+async function loadDistrictRegistry() {
+  try {
+    const resp = await fetch('config/districts.json');
+    if (!resp.ok) return;
+    const data = await resp.json();
+    const districts = (data.districts || []).filter(d => d.active !== false);
+    if (districts.length <= 1) return; // Don't show selector for single district
+
+    const selector = document.getElementById('district-selector');
+    const selectorRow = document.getElementById('district-selector-row');
+    if (!selector || !selectorRow) return;
+
+    // Determine current district from URL or default
+    const params = new URLSearchParams(window.location.search);
+    const currentId = params.get('district') || data.defaultDistrict || DEFAULT_DISTRICT;
+
+    selector.innerHTML = districts.map(d =>
+      `<option value="${d.id}" ${d.id === currentId ? 'selected' : ''}>${d.name}, ${d.state}</option>`
+    ).join('');
+
+    selectorRow.style.display = 'inline';
+    console.log(`[SupplySentinel] ${districts.length} districts available`);
+  } catch (err) {
+    // Silently fail — district selector is optional
+    console.log('[SupplySentinel] No district registry found (single-district mode)');
+  }
+}
+
 // INIT — Load config, then render everything
 // ============================================================
 
@@ -3636,6 +3690,9 @@ async function init() {
   renderFeed();
   renderPriceTable();
   renderHotspots();
+
+  // Load multi-district registry (non-blocking)
+  loadDistrictRegistry();
 }
 
 init();

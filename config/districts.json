@@ -1,0 +1,19 @@
+{
+  "defaultDistrict": "balangir",
+  "districts": [
+    {
+      "id": "balangir",
+      "name": "Balangir",
+      "state": "Odisha",
+      "config": "config/balangir.json",
+      "active": true
+    },
+    {
+      "id": "cuttack",
+      "name": "Cuttack",
+      "state": "Odisha",
+      "config": "config/example-cuttack.json",
+      "active": false
+    }
+  ]
+}

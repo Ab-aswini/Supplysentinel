@@ -1,0 +1,67 @@
+{
+  "district": "YOUR_DISTRICT_NAME",
+  "state": "YOUR_STATE",
+  "country": "India",
+  "language": "en",
+  "liveUrl": "https://YOUR-SITE.netlify.app",
+  "repoUrl": "https://github.com/YOUR-USERNAME/Supplysentinel",
+
+  "crisis": {
+    "active": false,
+    "commodity": "",
+    "officialPrice": 0,
+    "blackMarketPrice": 0,
+    "message": ""
+  },
+
+  "areas": [
+    "Area 1",
+    "Area 2",
+    "Area 3",
+    "Area 4",
+    "Area 5"
+  ],
+
+  "hotspots": [
+    { "area": "Area 1", "reports": 0, "level": "low" },
+    { "area": "Area 2", "reports": 0, "level": "low" },
+    { "area": "Area 3", "reports": 0, "level": "low" },
+    { "area": "Area 4", "reports": 0, "level": "low" },
+    { "area": "Area 5", "reports": 0, "level": "low" }
+  ],
+
+  "officialContacts": {
+    "districtCollector": {
+      "name": "District Collector, YOUR_DISTRICT_NAME",
+      "email": "your-district-collector@nic.in",
+      "role": "District Administration"
+    },
+    "civilSupplies": {
+      "name": "Civil Supplies Officer, YOUR_DISTRICT_NAME",
+      "email": "",
+      "role": "Essential Commodities Regulation"
+    }
+  },
+
+  "consumerHelpline": "1800-11-4000",
+
+  "commodities": [
+    { "name": "LPG Cylinder (14.2kg)", "officialPrice": 939, "marketPrice": 939, "unit": "cylinder", "icon": "\ud83d\udd25" },
+    { "name": "Mustard Oil (1L)", "officialPrice": 145, "marketPrice": 145, "unit": "liter", "icon": "\ud83e\udeed" },
+    { "name": "Sugar (1kg)", "officialPrice": 42, "marketPrice": 42, "unit": "kg", "icon": "\ud83c\udf5a" },
+    { "name": "Rice (1kg)", "officialPrice": 38, "marketPrice": 38, "unit": "kg", "icon": "\ud83c\udf3e" },
+    { "name": "Wheat Atta (1kg)", "officialPrice": 35, "marketPrice": 35, "unit": "kg", "icon": "\ud83c\udf3e" },
+    { "name": "Onion (1kg)", "officialPrice": 40, "marketPrice": 40, "unit": "kg", "icon": "\ud83e\uddc5" },
+    { "name": "Tomato (1kg)", "officialPrice": 35, "marketPrice": 35, "unit": "kg", "icon": "\ud83c\udf45" },
+    { "name": "Toor Dal (1kg)", "officialPrice": 155, "marketPrice": 155, "unit": "kg", "icon": "\ud83e\uded8" },
+    { "name": "Petrol (1L)", "officialPrice": 105, "marketPrice": 105, "unit": "liter", "icon": "\u26fd" }
+  ],
+
+  "seedReports": [],
+
+  "dataSources": {
+    "lpg": "https://ppac.gov.in",
+    "essentialCommodities": "https://consumeraffairs.nic.in/price-monitoring-cell",
+    "nationalConsumerHelpline": "https://consumerhelpline.gov.in"
+  }
+}

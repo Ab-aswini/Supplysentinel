@@ -3,13 +3,14 @@
  * Provides offline support and caching for the PWA.
  */
 
-const CACHE_NAME = 'supplysentinel-v1';
+const CACHE_NAME = 'supplysentinel-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
   '/social-card.png',
   '/config/balangir.json',
+  '/config/districts.json',
   '/data/official-prices.json',
   'https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap'
 ];
