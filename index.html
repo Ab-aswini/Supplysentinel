@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SupplySentinel — Balangir Market Watch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1e2530;
+    --border2: #2a3040;
+    --accent: #ff4d1c;
+    --accent2: #ff8c42;
+    --green: #00e676;
+    --yellow: #ffd740;
+    --red: #ff1744;
+    --text: #e8eaf0;
+    --text2: #8892a4;
+    --text3: #4a5568;
+    --mono: 'Space Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --display: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,12,15,0.92);
+    backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    animation: pulse-hex 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-hex {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,77,28,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(255,77,28,0); }
+  }
+
+  .logo-text {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text span {
+    color: var(--accent);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .crisis-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(255,23,68,0.12);
+    border: 1px solid rgba(255,23,68,0.3);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .crisis-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: blink 1s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .location-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: rgba(255,77,28,0.08);
+    border: 1px solid rgba(255,77,28,0.25);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 14px 20px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text2);
+    animation: slide-in 0.5s ease;
+  }
+
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .alert-banner strong {
+    color: var(--accent2);
+  }
+
+  /* SECTION TITLE */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  /* SCORE CARDS ROW */
+  .scores-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .score-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+
+  .score-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 60px;
+    background: radial-gradient(circle, var(--card-glow, rgba(255,77,28,0.08)) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .score-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .score-value {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 36px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .score-sub {
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .score-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* GRID LAYOUT */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 768px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* PANEL */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .panel-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-live {
+    background: rgba(0,230,118,0.1);
+    color: var(--green);
+    border: 1px solid rgba(0,230,118,0.2);
+  }
+
+  .badge-warn {
+    background: rgba(255,215,64,0.1);
+    color: var(--yellow);
+    border: 1px solid rgba(255,215,64,0.2);
+  }
+
+  .badge-alert {
+    background: rgba(255,23,68,0.1);
+    color: var(--red);
+    border: 1px solid rgba(255,23,68,0.2);
+  }
+
+  .panel-body {
+    padding: 20px;
+  }
+
+  /* COMMODITY TABLE */
+  .commodity-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .commodity-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .commodity-table td {
+    padding: 12px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .commodity-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .commodity-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .comm-name {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .comm-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-right: 8px;
+  }
+
+  .price-official {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .price-market {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .price-fair { color: var(--green); }
+  .price-warn { color: var(--yellow); }
+  .price-alert { color: var(--red); }
+
+  .diff-chip {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+  }
+
+  .chip-ok { background: rgba(0,230,118,0.1); color: var(--green); }
+  .chip-warn { background: rgba(255,215,64,0.1); color: var(--yellow); }
+  .chip-hot { background: rgba(255,23,68,0.1); color: var(--red); }
+
+  /* REPORT FEED */
+  .report-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 12px;
+    align-items: start;
+    animation: fade-up 0.4s ease;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .report-item:last-child {
+    border-bottom: none;
+  }
+
+  .report-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .report-content { flex: 1; }
+
+  .report-meta {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 4px;
+  }
+
+  .report-meta strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .report-detail {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .report-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+  }
+
+  .tag-location {
+    background: rgba(99,179,237,0.1);
+    color: #63b3ed;
+    border: 1px solid rgba(99,179,237,0.15);
+  }
+
+  .tag-commodity {
+    background: rgba(255,140,66,0.1);
+    color: var(--accent2);
+    border: 1px solid rgba(255,140,66,0.15);
+  }
+
+  .report-time {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  .upvote-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    align-self: start;
+    margin-top: 2px;
+  }
+
+  .upvote-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255,77,28,0.06);
+  }
+
+  .upvote-btn.voted {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255,77,28,0.1);
+  }
+
+  /* REPORT FORM */
+  .report-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .form-header {
+    padding: 16px 20px;
+    background: rgba(255,77,28,0.05);
+    border-bottom: 1px solid rgba(255,77,28,0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-header-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(255,77,28,0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .form-header-text h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .form-header-text p {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
+  .form-body {
+    padding: 24px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  input, select, textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 10px 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255,77,28,0.1);
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  select option {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .price-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: end;
+  }
+
+  @media (max-width: 600px) {
+    .price-row { grid-template-columns: 1fr 1fr; }
+  }
+
+  .price-diff-display {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+  }
+
+  .submit-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .btn-submit {
+    padding: 12px 28px;
+    background: var(--accent);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-submit:hover::before { opacity: 1; }
+  .btn-submit:active { transform: scale(0.98); }
+
+  .btn-secondary {
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text2);
+    font-family: var(--sans);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--text3);
+    color: var(--text);
+  }
+
+  .submit-note {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  /* SUCCESS TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface2);
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    z-index: 1000;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 320px;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .toast-icon { font-size: 20px; }
+  .toast-text { flex: 1; }
+  .toast-text strong { color: var(--green); display: block; margin-bottom: 2px; }
+  .toast-text span { font-size: 12px; color: var(--text2); }
+
+  /* HOTSPOT MAP */
+  .hotspot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .hotspot-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hotspot-card:hover {
+    border-color: var(--border2);
+    transform: scale(1.02);
+  }
+
+  .hotspot-area {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .hotspot-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .hotspot-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .hotspot-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  .heat-low { background: var(--green); }
+  .heat-med { background: var(--yellow); }
+  .heat-high { background: var(--red); }
+
+  .hotspot-heat {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  /* GENERATE REPORT */
+  .report-generator {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .rg-info h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .rg-info p {
+    font-size: 13px;
+    color: var(--text2);
+    max-width: 500px;
+  }
+
+  .rg-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-report {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-report:hover {
+    background: rgba(255,77,28,0.08);
+  }
+
+  .btn-report-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-report-primary:hover {
+    background: #e0431a;
+  }
+
+  /* OFFICIAL PRICES TABLE */
+  .official-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(0,230,118,0.05);
+    border: 1px solid rgba(0,230,118,0.1);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 16px;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 28px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: scale(0.95);
+    transition: transform 0.2s;
+  }
+
+  .modal-overlay.open .modal {
+    transform: scale(1);
+  }
+
+  .modal-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .modal-sub {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 20px;
+  }
+
+  .report-preview {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text2);
+    margin-bottom: 20px;
+    white-space: pre-line;
+  }
+
+  .report-preview .rp-header {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .report-preview .rp-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .report-preview .rp-row:last-child {
+    border-bottom: none;
+  }
+
+  .report-preview .rp-label { color: var(--text3); }
+  .report-preview .rp-val { color: var(--text); }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .tab {
+    padding: 12px 20px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .tab:hover { color: var(--text2); }
+
+  .tab.active {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-content { display: none; padding: 20px; }
+  .tab-content.active { display: block; }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 24px;
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+
+  .footer-left {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .footer-left a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .github-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text2);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .github-btn:hover {
+    border-color: var(--text3);
+    color: var(--text);
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text3);
+  }
+
+  .empty-state .es-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  .empty-state p {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+
+  /* NUMBER COUNTER */
+  .counter {
+    display: inline-block;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .header { padding: 0 16px; }
+    .location-tag { display: none; }
+    .main { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">⬡</div>
+    <div class="logo-text">Supply<span>Sentinel</span></div>
+  </div>
+  <div class="header-right">
+    <div class="crisis-badge">
+      <div class="crisis-dot"></div>
+      LPG Crisis Active
+    </div>
+    <div class="location-tag">BALANGIR, ODISHA</div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ALERT -->
+  <div class="alert-banner">
+    ⚠️ <strong>Active Crisis Alert:</strong> LPG black market pricing detected in Balangir region. Official domestic cylinder price: ₹939. Reports of black market pricing up to ₹2,500 received. <strong>Report violations below.</strong>
+  </div>
+
+  <!-- SCORE CARDS -->
+  <div class="section-label">Market Health Dashboard</div>
+  <div class="scores-row">
+    <div class="score-card" style="--card-glow: rgba(255,23,68,0.12);">
+      <div class="score-label">Market Fairness Index</div>
+      <div class="score-value" style="color: var(--red);">38<span style="font-size:20px">/100</span></div>
+      <div class="score-sub">Critical — Active gouging detected</div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:38%; background: var(--red);"></div></div>
+    </div>
+    <div class="score-card" style="--card-glow: rgba(255,215,64,0.08);">
+      <div class="score-label">Supply Health Score</div>
+      <div class="score-value" style="color: var(--yellow);">55<span style="font-size:20px">/100</span></div>
+      <div class="score-sub">Moderate — LPG constrained</div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:55%; background: var(--yellow);"></div></div>
+    </div>
+    <div class="score-card" style="--card-glow: rgba(255,77,28,0.08);">
+      <div class="score-label">Reports This Week</div>
+      <div class="score-value" style="color: var(--accent2);"><span class="counter" id="report-count">12</span></div>
+      <div class="score-sub">From <span id="area-count">5</span> areas in Balangir</div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:60%; background: var(--accent2);"></div></div>
+    </div>
+    <div class="score-card" style="--card-glow: rgba(0,230,118,0.06);">
+      <div class="score-label">Violations Reported</div>
+      <div class="score-value" style="color: var(--green);">3</div>
+      <div class="score-sub">Sent to District Collector</div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:30%; background: var(--green);"></div></div>
+    </div>
+  </div>
+
+  <!-- REPORT FORM -->
+  <div class="report-form">
+    <div class="form-header">
+      <div class="form-header-icon">📍</div>
+      <div class="form-header-text">
+        <h3>Report a Price Violation</h3>
+        <p>Seen overpricing? Report it in 30 seconds. Your report is anonymous and creates a paper trail.</p>
+      </div>
+    </div>
+    <div class="form-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Commodity</label>
+          <select id="f-commodity" onchange="updateOfficialPrice()">
+            <option value="">Select commodity...</option>
+            <option value="LPG Cylinder (14.2kg)">LPG Cylinder (14.2kg)</option>
+            <option value="Mustard Oil (1L)">Mustard Oil (1L)</option>
+            <option value="Sugar (1kg)">Sugar (1kg)</option>
+            <option value="Rice (1kg)">Rice (1kg)</option>
+            <option value="Wheat Atta (1kg)">Wheat Atta (1kg)</option>
+            <option value="Onion (1kg)">Onion (1kg)</option>
+            <option value="Tomato (1kg)">Tomato (1kg)</option>
+            <option value="Toor Dal (1kg)">Toor Dal (1kg)</option>
+            <option value="Petrol (1L)">Petrol (1L)</option>
+            <option value="Other">Other (specify in notes)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Shop / Area Name</label>
+          <input type="text" id="f-shop" placeholder="e.g. Sanjay Kirana, Cantonment Rd">
+        </div>
+      </div>
+
+      <div class="price-row">
+        <div class="form-group">
+          <label>Official MRP (₹)</label>
+          <input type="number" id="f-official" placeholder="Auto-filled" readonly style="opacity:0.7; cursor:not-allowed;">
+        </div>
+        <div class="form-group">
+          <label>Price You Saw (₹)</label>
+          <input type="number" id="f-reported" placeholder="e.g. 2500" oninput="calcDiff()">
+        </div>
+        <div class="form-group">
+          <label>Difference</label>
+          <div class="price-diff-display" id="f-diff" style="color: var(--text3);">—</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Area in Balangir</label>
+          <select id="f-area">
+            <option value="">Select area...</option>
+            <option>Cantonment Road</option>
+            <option>Titilagarh Road</option>
+            <option>Gandhi Chowk</option>
+            <option>Court Road</option>
+            <option>Bus Stand Area</option>
+            <option>Sargipali</option>
+            <option>Bibhutipara</option>
+            <option>Nehru Nagar</option>
+            <option>Kesinga Road</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Severity</label>
+          <select id="f-severity">
+            <option value="moderate">Moderate (10–50% above MRP)</option>
+            <option value="severe">Severe (50–100% above MRP)</option>
+            <option value="extreme">Extreme (100%+ above MRP)</option>
+            <option value="shortage">Artificial Shortage (refusing to sell)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full">
+          <label>Additional Details (Optional)</label>
+          <textarea id="f-notes" placeholder="Any extra context — e.g. 'shop owner said only selling to known customers', 'said stock will arrive in 3 days'..."></textarea>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button class="btn-submit" onclick="submitReport()">⚑ Submit Report</button>
+        <button class="btn-secondary" onclick="clearForm()">Clear</button>
+        <span class="submit-note">Anonymous · No login required · Data stored locally</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID: Live Feed + Price Table -->
+  <div class="grid-2">
+
+    <!-- CITIZEN REPORTS FEED -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Citizen Reports</span>
+        <span class="panel-badge badge-live">● LIVE FEED</span>
+      </div>
+      <div style="border-bottom: 1px solid var(--border);">
+        <div class="tabs" id="feed-tabs">
+          <div class="tab active" onclick="switchTab('all')">All Reports</div>
+          <div class="tab" onclick="switchTab('severe')">Severe</div>
+          <div class="tab" onclick="switchTab('shortage')">Shortages</div>
+        </div>
+      </div>
+      <div id="report-feed" style="padding: 0 20px; max-height: 480px; overflow-y: auto;">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- OFFICIAL PRICES -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Official MRP vs Market</span>
+        <span class="panel-badge badge-warn">↑ VOLATILE</span>
+      </div>
+      <div class="panel-body" style="padding: 16px 20px;">
+        <div class="official-note">
+          ✓ Official prices sourced from Odisha Civil Supplies & OMC. Updated manually — contribute corrections on GitHub.
+        </div>
+        <table class="commodity-table" id="price-table">
+          <thead>
+            <tr>
+              <th>Commodity</th>
+              <th>Official MRP</th>
+              <th>Reported</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="price-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOTSPOT MAP -->
+  <div class="panel" style="margin-bottom: 40px;">
+    <div class="panel-header">
+      <span class="panel-title">Price Gouging Hotspots — Balangir</span>
+      <span class="panel-badge badge-alert">⚠ 3 HIGH-RISK AREAS</span>
+    </div>
+    <div class="panel-body">
+      <div class="hotspot-grid" id="hotspot-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT GENERATOR -->
+  <div class="report-generator">
+    <div class="rg-info">
+      <h3>📄 Generate Official Complaint</h3>
+      <p>Auto-compile all reported violations into a formal complaint letter addressed to the Balangir District Collector and Civil Supplies Officer. One click — ready to email or print.</p>
+    </div>
+    <div class="rg-actions">
+      <button class="btn-report" onclick="openReportModal('whatsapp')">
+        💬 Share via WhatsApp
+      </button>
+      <button class="btn-report btn-report-primary" onclick="openReportModal('collector')">
+        📋 Generate DC Report
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">
+    SupplySentinel v0.1 — Open Source · <a href="#" onclick="alert('Star us on GitHub after we publish!')">github.com/supplysentinel</a> · Built for Balangir, Odisha 🇮🇳
+  </div>
+  <a href="#" class="github-btn" onclick="alert('GitHub repo coming soon! Built with ❤️ in Balangir')">
+    ⭐ Star on GitHub
+  </a>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon">✅</div>
+  <div class="toast-text">
+    <strong id="toast-title">Report Submitted</strong>
+    <span id="toast-sub">Your report has been recorded. Thank you!</span>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-title" id="modal-title">Generated Report</div>
+    <div class="modal-sub" id="modal-sub">Review and send to authorities</div>
+    <div class="report-preview" id="modal-content"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModalDirect()">Close</button>
+      <button class="btn-submit" id="modal-action-btn">Copy Report</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA STORE
+// ============================================================
+
+const OFFICIAL_PRICES = {
+  'LPG Cylinder (14.2kg)': { price: 939, unit: 'cylinder', icon: '🔥' },
+  'Mustard Oil (1L)': { price: 145, unit: 'liter', icon: '🫙' },
+  'Sugar (1kg)': { price: 42, unit: 'kg', icon: '🍚' },
+  'Rice (1kg)': { price: 38, unit: 'kg', icon: '🌾' },
+  'Wheat Atta (1kg)': { price: 35, unit: 'kg', icon: '🌾' },
+  'Onion (1kg)': { price: 40, unit: 'kg', icon: '🧅' },
+  'Tomato (1kg)': { price: 35, unit: 'kg', icon: '🍅' },
+  'Toor Dal (1kg)': { price: 155, unit: 'kg', icon: '🫘' },
+  'Petrol (1L)': { price: 105, unit: 'liter', icon: '⛽' },
+  'Other': { price: null, unit: '', icon: '📦' },
+};
+
+const MARKET_PRICES = {
+  'LPG Cylinder (14.2kg)': 1800,
+  'Mustard Oil (1L)': 185,
+  'Sugar (1kg)': 50,
+  'Rice (1kg)': 38,
+  'Wheat Atta (1kg)': 36,
+  'Onion (1kg)': 65,
+  'Tomato (1kg)': 80,
+  'Toor Dal (1kg)': 175,
+  'Petrol (1L)': 105,
+};
+
+const HOTSPOTS = [
+  { area: 'Gandhi Chowk', reports: 4, level: 'high' },
+  { area: 'Bus Stand', reports: 3, level: 'high' },
+  { area: 'Cantonment Rd', reports: 3, level: 'high' },
+  { area: 'Court Road', reports: 2, level: 'med' },
+  { area: 'Titilagarh Rd', reports: 1, level: 'med' },
+  { area: 'Sargipali', reports: 1, level: 'low' },
+  { area: 'Bibhutipara', reports: 0, level: 'low' },
+  { area: 'Nehru Nagar', reports: 1, level: 'low' },
+];
+
+// Load reports from localStorage
+function loadReports() {
+  try {
+    return JSON.parse(localStorage.getItem('ss_reports') || '[]');
+  } catch { return []; }
+}
+
+function saveReports(reports) {
+  localStorage.setItem('ss_reports', JSON.stringify(reports));
+}
+
+// Seed reports if none exist
+const SEED_REPORTS = [
+  {
+    id: 'r1', commodity: 'LPG Cylinder (14.2kg)', shop: 'Mahesh Gas Agency',
+    area: 'Gandhi Chowk', official: 939, reported: 2500,
+    severity: 'extreme', notes: 'Denied having stock, then offered at ₹2500 for cash',
+    time: Date.now() - 3600000, upvotes: 7, icon: '🔥'
+  },
+  {
+    id: 'r2', commodity: 'Mustard Oil (1L)', shop: 'Raju General Store',
+    area: 'Bus Stand Area', official: 145, reported: 210,
+    severity: 'moderate', notes: 'Claiming supply from Raipur is stopped',
+    time: Date.now() - 7200000, upvotes: 4, icon: '🫙'
+  },
+  {
+    id: 'r3', commodity: 'LPG Cylinder (14.2kg)', shop: 'Santoshi Distributors',
+    area: 'Cantonment Road', official: 939, reported: 1800,
+    severity: 'severe', notes: 'No receipt given',
+    time: Date.now() - 86400000, upvotes: 9, icon: '🔥'
+  },
+  {
+    id: 'r4', commodity: 'Sugar (1kg)', shop: 'Laxmi Kirana',
+    area: 'Court Road', official: 42, reported: 58,
+    severity: 'moderate', notes: '',
+    time: Date.now() - 172800000, upvotes: 2, icon: '🍚'
+  },
+  {
+    id: 'r5', commodity: 'Toor Dal (1kg)', shop: 'Om Namah Store',
+    area: 'Bus Stand Area', official: 155, reported: 220,
+    severity: 'moderate', notes: 'Said new stock coming next week',
+    time: Date.now() - 259200000, upvotes: 3, icon: '🫘'
+  },
+];
+
+let allReports = loadReports();
+if (allReports.length === 0) {
+  allReports = SEED_REPORTS;
+  saveReports(allReports);
+}
+
+let votedReports = new Set(JSON.parse(localStorage.getItem('ss_voted') || '[]'));
+let currentFilter = 'all';
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+
+function renderFeed(filter = 'all') {
+  currentFilter = filter;
+  const container = document.getElementById('report-feed');
+  let reports = [...allReports].sort((a, b) => b.time - a.time);
+
+  if (filter === 'severe') {
+    reports = reports.filter(r => r.severity === 'severe' || r.severity === 'extreme');
+  } else if (filter === 'shortage') {
+    reports = reports.filter(r => r.severity === 'shortage');
+  }
+
+  if (reports.length === 0) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="es-icon">📭</div>
+      <div style="font-size:14px;color:var(--text2);">No reports in this category yet.</div>
+      <p>Be the first to report a violation!</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = reports.map(r => {
+    const diff = r.reported - r.official;
+    const pct = Math.round((diff / r.official) * 100);
+    const timeAgo = getTimeAgo(r.time);
+    const severityColor = r.severity === 'extreme' ? 'var(--red)' : r.severity === 'severe' ? 'var(--yellow)' : 'var(--accent2)';
+    const voted = votedReports.has(r.id);
+
+    return `<div class="report-item" id="item-${r.id}">
+      <div class="report-avatar">${r.icon || '📦'}</div>
+      <div class="report-content">
+        <div class="report-meta"><strong>${r.commodity}</strong> at ${r.shop}</div>
+        <div class="report-detail" style="color:${severityColor};">
+          ₹${r.official} → ₹${r.reported}
+          <span style="font-family:var(--mono);font-size:11px;margin-left:6px;opacity:0.8;">+${pct}% above MRP</span>
+        </div>
+        <div class="report-tags">
+          <span class="tag tag-location">📍 ${r.area}</span>
+          <span class="tag tag-commodity">${r.severity.toUpperCase()}</span>
+          ${r.notes ? `<span class="tag" style="background:rgba(255,255,255,0.04);color:var(--text3);border:1px solid var(--border2);">"${r.notes.substring(0,40)}${r.notes.length > 40 ? '...' : ''}"</span>` : ''}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <div class="report-time">${timeAgo}</div>
+        <button class="upvote-btn ${voted ? 'voted' : ''}" onclick="upvote('${r.id}')">
+          ▲ <span id="up-${r.id}">${r.upvotes}</span>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Update count
+  document.getElementById('report-count').textContent = allReports.length;
+  const areas = new Set(allReports.map(r => r.area));
+  document.getElementById('area-count').textContent = areas.size;
+}
+
+function renderPriceTable() {
+  const tbody = document.getElementById('price-tbody');
+  const rows = Object.entries(OFFICIAL_PRICES)
+    .filter(([k]) => k !== 'Other')
+    .map(([commodity, data]) => {
+      const market = MARKET_PRICES[commodity];
+      const diff = market - data.price;
+      const pct = Math.round((diff / data.price) * 100);
+      let priceClass, chipClass, chipText;
+
+      if (pct <= 5) { priceClass = 'price-fair'; chipClass = 'chip-ok'; chipText = 'FAIR'; }
+      else if (pct <= 30) { priceClass = 'price-warn'; chipClass = 'chip-warn'; chipText = `+${pct}%`; }
+      else { priceClass = 'price-alert'; chipClass = 'chip-hot'; chipText = `+${pct}%`; }
+
+      return `<tr>
+        <td>
+          <span class="comm-icon" style="background:var(--surface2);">${data.icon}</span>
+          <span class="comm-name">${commodity}</span>
+        </td>
+        <td><span class="price-official">₹${data.price}</span></td>
+        <td><span class="price-market ${priceClass}">₹${market}</span></td>
+        <td><span class="diff-chip ${chipClass}">${chipText}</span></td>
+      </tr>`;
+    }).join('');
+
+  tbody.innerHTML = rows;
+}
+
+function renderHotspots() {
+  const grid = document.getElementById('hotspot-grid');
+  const maxReports = Math.max(...HOTSPOTS.map(h => h.reports), 1);
+
+  grid.innerHTML = HOTSPOTS.map(h => {
+    const pct = Math.round((h.reports / maxReports) * 100);
+    const heatColor = h.level === 'high' ? 'heat-high' : h.level === 'med' ? 'heat-med' : 'heat-low';
+    const dotColor = h.level === 'high' ? 'var(--red)' : h.level === 'med' ? 'var(--yellow)' : 'var(--green)';
+
+    return `<div class="hotspot-card" onclick="filterByArea('${h.area}')">
+      <div class="hotspot-heat" style="background:${dotColor};"></div>
+      <div class="hotspot-area">${h.area}</div>
+      <div class="hotspot-count">${h.reports} report${h.reports !== 1 ? 's' : ''}</div>
+      <div class="hotspot-bar"><div class="hotspot-fill ${heatColor}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// FORM LOGIC
+// ============================================================
+
+function updateOfficialPrice() {
+  const commodity = document.getElementById('f-commodity').value;
+  const data = OFFICIAL_PRICES[commodity];
+  const officialInput = document.getElementById('f-official');
+  if (data && data.price) {
+    officialInput.value = data.price;
+  } else {
+    officialInput.value = '';
+  }
+  calcDiff();
+}
+
+function calcDiff() {
+  const official = parseFloat(document.getElementById('f-official').value);
+  const reported = parseFloat(document.getElementById('f-reported').value);
+  const diffEl = document.getElementById('f-diff');
+
+  if (official && reported) {
+    const diff = reported - official;
+    const pct = Math.round((diff / official) * 100);
+    if (diff > 0) {
+      diffEl.style.color = pct > 50 ? 'var(--red)' : 'var(--yellow)';
+      diffEl.textContent = `+₹${diff} (+${pct}%)`;
+    } else if (diff < 0) {
+      diffEl.style.color = 'var(--green)';
+      diffEl.textContent = `-₹${Math.abs(diff)} (${pct}%)`;
+    } else {
+      diffEl.style.color = 'var(--green)';
+      diffEl.textContent = 'At MRP ✓';
+    }
+  } else {
+    diffEl.style.color = 'var(--text3)';
+    diffEl.textContent = '—';
+  }
+}
+
+function submitReport() {
+  const commodity = document.getElementById('f-commodity').value;
+  const shop = document.getElementById('f-shop').value;
+  const official = parseFloat(document.getElementById('f-official').value);
+  const reported = parseFloat(document.getElementById('f-reported').value);
+  const area = document.getElementById('f-area').value;
+  const severity = document.getElementById('f-severity').value;
+  const notes = document.getElementById('f-notes').value;
+
+  if (!commodity || !shop || !reported || !area) {
+    showToast('⚠️', 'Missing Fields', 'Please fill in commodity, shop, price, and area.');
+    return;
+  }
+
+  if (reported <= 0) {
+    showToast('⚠️', 'Invalid Price', 'Please enter a valid price.');
+    return;
+  }
+
+  const iconData = OFFICIAL_PRICES[commodity];
+  const newReport = {
+    id: 'r' + Date.now(),
+    commodity,
+    shop,
+    area,
+    official: official || 0,
+    reported,
+    severity,
+    notes,
+    time: Date.now(),
+    upvotes: 0,
+    icon: iconData ? iconData.icon : '📦'
+  };
+
+  allReports.unshift(newReport);
+  saveReports(allReports);
+
+  // Update hotspots
+  const hotspot = HOTSPOTS.find(h => h.area === area);
+  if (hotspot) {
+    hotspot.reports += 1;
+    const pct = (hotspot.reports / 4) * 100;
+    if (pct >= 75) hotspot.level = 'high';
+    else if (pct >= 40) hotspot.level = 'med';
+  }
+
+  renderFeed(currentFilter);
+  renderHotspots();
+  clearForm();
+
+  const diff = reported - (official || 0);
+  const pct = official ? Math.round((diff / official) * 100) : 0;
+  showToast('✅', 'Report Submitted!', `${commodity} +${pct}% above MRP in ${area}. Thank you!`);
+}
+
+function clearForm() {
+  document.getElementById('f-commodity').value = '';
+  document.getElementById('f-shop').value = '';
+  document.getElementById('f-official').value = '';
+  document.getElementById('f-reported').value = '';
+  document.getElementById('f-area').value = '';
+  document.getElementById('f-severity').value = 'moderate';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('f-diff').textContent = '—';
+  document.getElementById('f-diff').style.color = 'var(--text3)';
+}
+
+// ============================================================
+// INTERACTIONS
+// ============================================================
+
+function upvote(id) {
+  if (votedReports.has(id)) return;
+  const report = allReports.find(r => r.id === id);
+  if (report) {
+    report.upvotes += 1;
+    votedReports.add(id);
+    localStorage.setItem('ss_voted', JSON.stringify([...votedReports]));
+    saveReports(allReports);
+    const el = document.getElementById('up-' + id);
+    if (el) el.textContent = report.upvotes;
+    const btn = el ? el.closest('.upvote-btn') : null;
+    if (btn) btn.classList.add('voted');
+  }
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('#feed-tabs .tab').forEach((t, i) => {
+    t.classList.toggle('active', ['all','severe','shortage'][i] === tab);
+  });
+  renderFeed(tab);
+}
+
+function filterByArea(area) {
+  showToast('🔍', `Filtering: ${area}`, `Showing reports from ${area}`);
+}
+
+// ============================================================
+// REPORT GENERATOR
+// ============================================================
+
+function openReportModal(type) {
+  const overlay = document.getElementById('modal-overlay');
+  const title = document.getElementById('modal-title');
+  const sub = document.getElementById('modal-sub');
+  const content = document.getElementById('modal-content');
+  const actionBtn = document.getElementById('modal-action-btn');
+
+  const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  const severeReports = allReports.filter(r => r.severity === 'severe' || r.severity === 'extreme');
+
+  if (type === 'collector') {
+    title.textContent = 'Official Complaint — District Collector';
+    sub.textContent = `Formal complaint letter · ${today} · ${severeReports.length} violation(s)`;
+    actionBtn.textContent = '📋 Copy Letter';
+    actionBtn.onclick = () => {
+      navigator.clipboard.writeText(content.innerText).then(() => {
+        showToast('📋', 'Copied!', 'Letter copied to clipboard. Paste in email or WhatsApp.');
+        closeModalDirect();
+      });
+    };
+
+    content.innerHTML = `
+<span class="rp-header">FORMAL COMPLAINT — MARKET PRICE VIOLATIONS</span>
+<div class="rp-row"><span class="rp-label">To:</span><span class="rp-val">District Collector, Balangir, Odisha</span></div>
+<div class="rp-row"><span class="rp-label">CC:</span><span class="rp-val">Civil Supplies Officer, Balangir District</span></div>
+<div class="rp-row"><span class="rp-label">Subject:</span><span class="rp-val">Illegal Overpricing & Hoarding of Essential Commodities</span></div>
+<div class="rp-row"><span class="rp-label">Date:</span><span class="rp-val">${today}</span></div>
+<div class="rp-row"><span class="rp-label">Platform:</span><span class="rp-val">SupplySentinel — Citizen Price Watch, Balangir</span></div>
+<div class="rp-row"><span class="rp-label">Total Reports:</span><span class="rp-val">${allReports.length} (${severeReports.length} severe/extreme violations)</span></div>
+
+<br>
+<div style="color:var(--text2);line-height:1.9;font-size:11px;">
+Sir/Madam,
+
+This is a formal complaint compiled by SupplySentinel, a citizen-driven price monitoring initiative for Balangir district. The following verified violations of Maximum Retail Price (MRP) on essential commodities have been reported by residents between ${new Date(Math.min(...allReports.map(r=>r.time))).toLocaleDateString('en-IN')} and ${today}.
+
+VIOLATION SUMMARY:
+${severeReports.map((r, i) => `
+${i+1}. ${r.commodity}
+   Shop: ${r.shop}, ${r.area}
+   Official Price: ₹${r.official} | Reported Price: ₹${r.reported}
+   Premium: +${Math.round(((r.reported-r.official)/r.official)*100)}% above MRP
+   Severity: ${r.severity.toUpperCase()}
+   ${r.notes ? `Notes: "${r.notes}"` : ''}
+   Community Confirmations: ${r.upvotes} upvote(s)
+`).join('')}
+
+We respectfully request an immediate inspection of the above establishments under the Essential Commodities Act, 1955 and relevant provisions of the Consumer Protection Act, 2019.
+
+Submitted on behalf of Balangir citizens via SupplySentinel.
+github.com/supplysentinel
+</div>`;
+
+  } else if (type === 'whatsapp') {
+    title.textContent = 'Share on WhatsApp';
+    sub.textContent = 'Copy and paste this message to your Balangir community groups';
+    actionBtn.textContent = '💬 Copy Message';
+    actionBtn.onclick = () => {
+      navigator.clipboard.writeText(content.innerText).then(() => {
+        showToast('💬', 'Copied!', 'Paste this in your WhatsApp groups!');
+        closeModalDirect();
+      });
+    };
+
+    const topReport = allReports.sort((a,b) => b.upvotes - a.upvotes)[0];
+    content.innerHTML = `<span class="rp-header">WHATSAPP COMMUNITY MESSAGE</span>
+<div style="color:var(--text);line-height:2;font-size:12px;">
+🚨 *BALANGIR MARKET ALERT — SupplySentinel Report*
+
+${allReports.length} cases of overpricing reported in Balangir this week.
+
+📍 *Worst case:*
+${topReport ? `${topReport.commodity} at ${topReport.shop} (${topReport.area})
+Official: ₹${topReport.official} → Black Market: ₹${topReport.reported} (+${Math.round(((topReport.reported-topReport.official)/topReport.official)*100)}%)` : 'No reports yet.'}
+
+📊 *Market Fairness Index: 38/100 — CRITICAL*
+
+✅ *Track prices & report violations:*
+➡ SupplySentinel App (share this link with family)
+
+🙏 Please forward to Balangir groups. Together we fight black marketing.
+</div>`;
+  }
+
+  overlay.classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+
+function showToast(icon, title, sub) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast').querySelector('.toast-icon').textContent = icon;
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-sub').textContent = sub;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+
+function getTimeAgo(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 3600000) return `${Math.round(diff/60000)}m ago`;
+  if (diff < 86400000) return `${Math.round(diff/3600000)}h ago`;
+  return `${Math.round(diff/86400000)}d ago`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+renderFeed();
+renderPriceTable();
+renderHotspots();
+</script>
+</body>
+</html>

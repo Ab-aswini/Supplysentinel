@@ -1,0 +1,40 @@
+{
+  "district": "Balangir",
+  "state": "Odisha",
+  "language": "en",
+  "areas": [
+    "Gandhi Chowk",
+    "Bus Stand Area",
+    "Cantonment Road",
+    "Court Road",
+    "Titilagarh Road",
+    "Sargipali",
+    "Bibhutipara",
+    "Nehru Nagar",
+    "Kesinga Road"
+  ],
+  "officialContacts": {
+    "districtCollector": {
+      "name": "District Collector, Balangir",
+      "email": "balangir-collector@nic.in",
+      "role": "District Administration"
+    },
+    "civilSupplies": {
+      "name": "Civil Supplies Officer, Balangir",
+      "email": "",
+      "role": "Essential Commodities Regulation"
+    }
+  },
+  "consumerHelpline": "1800-11-4000",
+  "commodities": [
+    { "name": "LPG Cylinder (14.2kg)", "officialPrice": 939, "unit": "cylinder", "icon": "fire" },
+    { "name": "Mustard Oil (1L)", "officialPrice": 145, "unit": "liter", "icon": "jar" },
+    { "name": "Sugar (1kg)", "officialPrice": 42, "unit": "kg", "icon": "rice" },
+    { "name": "Rice (1kg)", "officialPrice": 38, "unit": "kg", "icon": "grain" },
+    { "name": "Wheat Atta (1kg)", "officialPrice": 35, "unit": "kg", "icon": "grain" },
+    { "name": "Onion (1kg)", "officialPrice": 40, "unit": "kg", "icon": "onion" },
+    { "name": "Tomato (1kg)", "officialPrice": 35, "unit": "kg", "icon": "tomato" },
+    { "name": "Toor Dal (1kg)", "officialPrice": 155, "unit": "kg", "icon": "beans" },
+    { "name": "Petrol (1L)", "officialPrice": 105, "unit": "liter", "icon": "fuel" }
+  ]
+}
