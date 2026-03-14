@@ -1101,31 +1101,8 @@
 
   <!-- SCORE CARDS -->
   <div class="section-label">Market Health Dashboard</div>
-  <div class="scores-row">
-    <div class="score-card" style="--card-glow: rgba(255,23,68,0.12);">
-      <div class="score-label">Market Fairness Index</div>
-      <div class="score-value" style="color: var(--red);">38<span style="font-size:20px">/100</span></div>
-      <div class="score-sub">Critical — Active gouging detected</div>
-      <div class="score-bar"><div class="score-bar-fill" style="width:38%; background: var(--red);"></div></div>
-    </div>
-    <div class="score-card" style="--card-glow: rgba(255,215,64,0.08);">
-      <div class="score-label">Supply Health Score</div>
-      <div class="score-value" style="color: var(--yellow);">55<span style="font-size:20px">/100</span></div>
-      <div class="score-sub">Moderate — LPG constrained</div>
-      <div class="score-bar"><div class="score-bar-fill" style="width:55%; background: var(--yellow);"></div></div>
-    </div>
-    <div class="score-card" style="--card-glow: rgba(255,77,28,0.08);">
-      <div class="score-label">Reports This Week</div>
-      <div class="score-value" style="color: var(--accent2);"><span class="counter" id="report-count">12</span></div>
-      <div class="score-sub">From <span id="area-count">5</span> areas in Balangir</div>
-      <div class="score-bar"><div class="score-bar-fill" style="width:60%; background: var(--accent2);"></div></div>
-    </div>
-    <div class="score-card" style="--card-glow: rgba(0,230,118,0.06);">
-      <div class="score-label">Violations Reported</div>
-      <div class="score-value" style="color: var(--green);">3</div>
-      <div class="score-sub">Sent to District Collector</div>
-      <div class="score-bar"><div class="score-bar-fill" style="width:30%; background: var(--green);"></div></div>
-    </div>
+  <div class="scores-row" id="scores-row">
+    <!-- Dynamically rendered by renderScoreCards() -->
   </div>
 
   <!-- REPORT FORM -->
@@ -1214,7 +1191,7 @@
       <div class="submit-row">
         <button class="btn-submit" onclick="submitReport()">⚑ Submit Report</button>
         <button class="btn-secondary" onclick="clearForm()">Clear</button>
-        <span class="submit-note">Anonymous · No login required · Data stored locally</span>
+        <span class="submit-note">Anonymous · No login required · <span style="color:var(--text3);">🔒 Data stored locally on your device</span></span>
       </div>
     </div>
   </div>
@@ -1271,7 +1248,7 @@
   <div class="panel" style="margin-bottom: 40px;">
     <div class="panel-header">
       <span class="panel-title">Price Gouging Hotspots — Balangir</span>
-      <span class="panel-badge badge-alert">⚠ 3 HIGH-RISK AREAS</span>
+      <span class="panel-badge badge-alert" id="hotspot-badge">⚠ 3 HIGH-RISK AREAS</span>
     </div>
     <div class="panel-body">
       <div class="hotspot-grid" id="hotspot-grid">
@@ -1301,9 +1278,10 @@
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-left">
-    SupplySentinel v0.1 — Open Source · <a href="#" onclick="alert('Star us on GitHub after we publish!')">github.com/supplysentinel</a> · Built for Balangir, Odisha 🇮🇳
+    SupplySentinel v1.0 — Open Source · <a href="https://github.com/Ab-aswini/Supplysentinel" target="_blank" rel="noopener">GitHub</a> · <a href="https://supplysentinel.netlify.app" target="_blank" rel="noopener">supplysentinel.netlify.app</a> · Built for Balangir, Odisha
+    <br><a href="#" onclick="clearAllData(); return false;" style="font-size:11px; color:var(--text3); opacity:0.6;">Reset Demo Data</a>
   </div>
-  <a href="#" class="github-btn" onclick="alert('GitHub repo coming soon! Built with ❤️ in Balangir')">
+  <a href="https://github.com/Ab-aswini/Supplysentinel" target="_blank" rel="noopener" class="github-btn">
     ⭐ Star on GitHub
   </a>
 </footer>
@@ -1325,6 +1303,7 @@
     <div class="report-preview" id="modal-content"></div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModalDirect()">Close</button>
+      <button class="btn-submit" id="modal-whatsapp-btn" style="display:none; background:#25D366;">Open WhatsApp</button>
       <button class="btn-submit" id="modal-action-btn">Copy Report</button>
     </div>
   </div>
@@ -1424,6 +1403,123 @@ if (allReports.length === 0) {
 
 let votedReports = new Set(JSON.parse(localStorage.getItem('ss_voted') || '[]'));
 let currentFilter = 'all';
+let areaFilter = null; // for hotspot click filtering
+
+// ============================================================
+// MFI & SUPPLY HEALTH CALCULATION
+// ============================================================
+
+function calculateMFI() {
+  if (allReports.length === 0) return { score: 100, label: 'No Data', color: 'var(--green)' };
+
+  // Violation Rate (40%): % of reports above MRP
+  const violationReports = allReports.filter(r => r.reported > r.official && r.official > 0);
+  const violationRate = (violationReports.length / allReports.length) * 100;
+
+  // Average Deviation (35%): mean % above MRP across all reports
+  let totalDeviation = 0;
+  let deviationCount = 0;
+  allReports.forEach(r => {
+    if (r.official > 0 && r.reported > r.official) {
+      totalDeviation += ((r.reported - r.official) / r.official) * 100;
+      deviationCount++;
+    }
+  });
+  const avgDeviation = deviationCount > 0 ? totalDeviation / deviationCount : 0;
+
+  // Severity Multiplier (15%): Extreme=3x, Severe=2x, Moderate=1x
+  let severitySum = 0;
+  allReports.forEach(r => {
+    if (r.severity === 'extreme') severitySum += 3;
+    else if (r.severity === 'severe') severitySum += 2;
+    else if (r.severity === 'moderate') severitySum += 1;
+  });
+  const avgSeverity = allReports.length > 0 ? severitySum / allReports.length : 0;
+  const severityPenalty = (avgSeverity / 3) * 100; // normalize to 0-100
+
+  // Volume Confidence (10%): confidence adjustment for < 5 reports
+  const volumeConfidence = allReports.length >= 5 ? 100 : (allReports.length / 5) * 100;
+
+  // Weighted penalty
+  const penalty = (violationRate * 0.40) + (Math.min(avgDeviation, 100) * 0.35) + (severityPenalty * 0.15) + ((100 - volumeConfidence) * 0.10);
+  const score = Math.max(0, Math.min(100, Math.round(100 - penalty)));
+
+  let label, color;
+  if (score >= 80) { label = 'Healthy — Market operating fairly'; color = 'var(--green)'; }
+  else if (score >= 60) { label = 'Caution — Some anomalies detected'; color = 'var(--yellow)'; }
+  else if (score >= 40) { label = 'Warning — Significant gouging'; color = 'var(--accent2)'; }
+  else { label = 'Critical — Active gouging detected'; color = 'var(--red)'; }
+
+  return { score, label, color };
+}
+
+function calculateSupplyHealth() {
+  if (allReports.length === 0) return { score: 100, label: 'No Data', color: 'var(--green)' };
+
+  // Consider commodity diversity
+  const commodities = new Set(allReports.map(r => r.commodity));
+  const totalCommodities = Object.keys(OFFICIAL_PRICES).length - 1; // exclude "Other"
+  const diversityPenalty = (commodities.size / totalCommodities) * 50; // more commodities affected = worse
+
+  // Consider shortage reports
+  const shortageReports = allReports.filter(r => r.severity === 'shortage');
+  const shortagePenalty = Math.min((shortageReports.length / allReports.length) * 100, 50);
+
+  // Consider extreme reports as supply stress
+  const extremeReports = allReports.filter(r => r.severity === 'extreme');
+  const extremePenalty = Math.min((extremeReports.length / allReports.length) * 50, 30);
+
+  const totalPenalty = diversityPenalty + shortagePenalty + extremePenalty;
+  const score = Math.max(0, Math.min(100, Math.round(100 - totalPenalty)));
+
+  let label, color;
+  if (score >= 80) { label = 'Stable — Supply chains healthy'; color = 'var(--green)'; }
+  else if (score >= 60) { label = 'Moderate — Some constraints'; color = 'var(--yellow)'; }
+  else if (score >= 40) { label = 'Strained — Multiple commodities affected'; color = 'var(--accent2)'; }
+  else { label = 'Critical — Severe supply disruption'; color = 'var(--red)'; }
+
+  return { score, label, color };
+}
+
+// ============================================================
+// RENDER SCORE CARDS
+// ============================================================
+
+function renderScoreCards() {
+  const mfi = calculateMFI();
+  const supply = calculateSupplyHealth();
+  const reportCount = allReports.length;
+  const areas = new Set(allReports.map(r => r.area));
+  const complaintsSent = parseInt(localStorage.getItem('ss_complaints_sent') || '0');
+
+  const container = document.getElementById('scores-row');
+  container.innerHTML = `
+    <div class="score-card" style="--card-glow: ${mfi.color === 'var(--red)' ? 'rgba(255,23,68,0.12)' : mfi.color === 'var(--yellow)' ? 'rgba(255,215,64,0.08)' : mfi.color === 'var(--green)' ? 'rgba(0,230,118,0.06)' : 'rgba(255,77,28,0.08)'};">
+      <div class="score-label">Market Fairness Index</div>
+      <div class="score-value" style="color: ${mfi.color};">${mfi.score}<span style="font-size:20px">/100</span></div>
+      <div class="score-sub">${mfi.label}</div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:${mfi.score}%; background: ${mfi.color};"></div></div>
+    </div>
+    <div class="score-card" style="--card-glow: ${supply.color === 'var(--red)' ? 'rgba(255,23,68,0.12)' : supply.color === 'var(--yellow)' ? 'rgba(255,215,64,0.08)' : supply.color === 'var(--green)' ? 'rgba(0,230,118,0.06)' : 'rgba(255,77,28,0.08)'};">
+      <div class="score-label">Supply Health Score</div>
+      <div class="score-value" style="color: ${supply.color};">${supply.score}<span style="font-size:20px">/100</span></div>
+      <div class="score-sub">${supply.label}</div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:${supply.score}%; background: ${supply.color};"></div></div>
+    </div>
+    <div class="score-card" style="--card-glow: rgba(255,77,28,0.08);">
+      <div class="score-label">Reports This Week</div>
+      <div class="score-value" style="color: var(--accent2);"><span class="counter" id="report-count">${reportCount}</span></div>
+      <div class="score-sub">From <span id="area-count">${areas.size}</span> areas in Balangir</div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:${Math.min(reportCount * 5, 100)}%; background: var(--accent2);"></div></div>
+    </div>
+    <div class="score-card" style="--card-glow: rgba(0,230,118,0.06);">
+      <div class="score-label">Violations Reported</div>
+      <div class="score-value" style="color: var(--green);">${complaintsSent}</div>
+      <div class="score-sub">Sent to District Collector</div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:${Math.min(complaintsSent * 10, 100)}%; background: var(--green);"></div></div>
+    </div>
+  `;
+}
 
 // ============================================================
 // RENDER FUNCTIONS
@@ -1440,18 +1536,32 @@ function renderFeed(filter = 'all') {
     reports = reports.filter(r => r.severity === 'shortage');
   }
 
+  // Apply area filter if set
+  if (areaFilter) {
+    reports = reports.filter(r => r.area.toLowerCase().includes(areaFilter.toLowerCase()));
+  }
+
   if (reports.length === 0) {
     container.innerHTML = `<div class="empty-state">
       <div class="es-icon">📭</div>
-      <div style="font-size:14px;color:var(--text2);">No reports in this category yet.</div>
+      <div style="font-size:14px;color:var(--text2);">No reports in this category${areaFilter ? ' for ' + areaFilter : ''} yet.</div>
       <p>Be the first to report a violation!</p>
+      ${areaFilter ? `<button class="btn-secondary" style="margin-top:12px;" onclick="clearAreaFilter()">Clear Filter</button>` : ''}
     </div>`;
     return;
   }
 
-  container.innerHTML = reports.map(r => {
+  let filterNotice = '';
+  if (areaFilter) {
+    filterNotice = `<div style="padding:10px 0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
+      <span style="font-family:var(--mono);font-size:11px;color:var(--accent2);">Filtered: ${areaFilter} (${reports.length} report${reports.length !== 1 ? 's' : ''})</span>
+      <button class="btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="clearAreaFilter()">Clear</button>
+    </div>`;
+  }
+
+  container.innerHTML = filterNotice + reports.map(r => {
     const diff = r.reported - r.official;
-    const pct = Math.round((diff / r.official) * 100);
+    const pct = r.official > 0 ? Math.round((diff / r.official) * 100) : 0;
     const timeAgo = getTimeAgo(r.time);
     const severityColor = r.severity === 'extreme' ? 'var(--red)' : r.severity === 'severe' ? 'var(--yellow)' : 'var(--accent2)';
     const voted = votedReports.has(r.id);
@@ -1480,9 +1590,13 @@ function renderFeed(filter = 'all') {
   }).join('');
 
   // Update count
-  document.getElementById('report-count').textContent = allReports.length;
-  const areas = new Set(allReports.map(r => r.area));
-  document.getElementById('area-count').textContent = areas.size;
+  const reportCountEl = document.getElementById('report-count');
+  if (reportCountEl) reportCountEl.textContent = allReports.length;
+  const areaCountEl = document.getElementById('area-count');
+  if (areaCountEl) {
+    const allAreas = new Set(allReports.map(r => r.area));
+    areaCountEl.textContent = allAreas.size;
+  }
 }
 
 function renderPriceTable() {
@@ -1516,6 +1630,11 @@ function renderPriceTable() {
 function renderHotspots() {
   const grid = document.getElementById('hotspot-grid');
   const maxReports = Math.max(...HOTSPOTS.map(h => h.reports), 1);
+
+  // Update dynamic hotspot badge
+  const highRiskCount = HOTSPOTS.filter(h => h.level === 'high').length;
+  const badge = document.getElementById('hotspot-badge');
+  if (badge) badge.textContent = `⚠ ${highRiskCount} HIGH-RISK AREA${highRiskCount !== 1 ? 'S' : ''}`;
 
   grid.innerHTML = HOTSPOTS.map(h => {
     const pct = Math.round((h.reports / maxReports) * 100);
@@ -1608,17 +1727,24 @@ function submitReport() {
   allReports.unshift(newReport);
   saveReports(allReports);
 
+  // Update market prices if reported price is higher than current market price
+  if (commodity !== 'Other' && MARKET_PRICES[commodity] !== undefined && reported > MARKET_PRICES[commodity]) {
+    MARKET_PRICES[commodity] = reported;
+  }
+
   // Update hotspots
-  const hotspot = HOTSPOTS.find(h => h.area === area);
+  const hotspot = HOTSPOTS.find(h => h.area === area || area.toLowerCase().includes(h.area.toLowerCase().replace(' rd', ' road').replace(' road', '')));
   if (hotspot) {
     hotspot.reports += 1;
-    const pct = (hotspot.reports / 4) * 100;
-    if (pct >= 75) hotspot.level = 'high';
-    else if (pct >= 40) hotspot.level = 'med';
+    const pct2 = (hotspot.reports / 4) * 100;
+    if (pct2 >= 75) hotspot.level = 'high';
+    else if (pct2 >= 40) hotspot.level = 'med';
   }
 
   renderFeed(currentFilter);
   renderHotspots();
+  renderPriceTable();
+  renderScoreCards();
   clearForm();
 
   const diff = reported - (official || 0);
@@ -1665,7 +1791,20 @@ function switchTab(tab) {
 }
 
 function filterByArea(area) {
+  areaFilter = area;
+  // Switch to "all" tab visually
+  document.querySelectorAll('#feed-tabs .tab').forEach((t, i) => {
+    t.classList.toggle('active', i === 0);
+  });
+  renderFeed('all');
+  // Scroll to feed
+  document.getElementById('report-feed').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showToast('🔍', `Filtering: ${area}`, `Showing reports from ${area}`);
+}
+
+function clearAreaFilter() {
+  areaFilter = null;
+  renderFeed(currentFilter);
 }
 
 // ============================================================
@@ -1682,12 +1821,19 @@ function openReportModal(type) {
   const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
   const severeReports = allReports.filter(r => r.severity === 'severe' || r.severity === 'extreme');
 
+  // Hide WhatsApp button by default
+  document.getElementById('modal-whatsapp-btn').style.display = 'none';
+
   if (type === 'collector') {
     title.textContent = 'Official Complaint — District Collector';
     sub.textContent = `Formal complaint letter · ${today} · ${severeReports.length} violation(s)`;
     actionBtn.textContent = '📋 Copy Letter';
     actionBtn.onclick = () => {
       navigator.clipboard.writeText(content.innerText).then(() => {
+        // Increment complaints sent counter
+        const sent = parseInt(localStorage.getItem('ss_complaints_sent') || '0') + 1;
+        localStorage.setItem('ss_complaints_sent', String(sent));
+        renderScoreCards();
         showToast('📋', 'Copied!', 'Letter copied to clipboard. Paste in email or WhatsApp.');
         closeModalDirect();
       });
@@ -1722,38 +1868,51 @@ ${i+1}. ${r.commodity}
 We respectfully request an immediate inspection of the above establishments under the Essential Commodities Act, 1955 and relevant provisions of the Consumer Protection Act, 2019.
 
 Submitted on behalf of Balangir citizens via SupplySentinel.
-github.com/supplysentinel
+https://supplysentinel.netlify.app
+Source: https://github.com/Ab-aswini/Supplysentinel
 </div>`;
 
   } else if (type === 'whatsapp') {
     title.textContent = 'Share on WhatsApp';
     sub.textContent = 'Copy and paste this message to your Balangir community groups';
     actionBtn.textContent = '💬 Copy Message';
-    actionBtn.onclick = () => {
-      navigator.clipboard.writeText(content.innerText).then(() => {
-        showToast('💬', 'Copied!', 'Paste this in your WhatsApp groups!');
-        closeModalDirect();
-      });
-    };
 
-    const topReport = allReports.sort((a,b) => b.upvotes - a.upvotes)[0];
-    content.innerHTML = `<span class="rp-header">WHATSAPP COMMUNITY MESSAGE</span>
-<div style="color:var(--text);line-height:2;font-size:12px;">
-🚨 *BALANGIR MARKET ALERT — SupplySentinel Report*
+    const mfi = calculateMFI();
+    const sortedReports = [...allReports].sort((a,b) => b.upvotes - a.upvotes);
+    const topReport = sortedReports[0];
+
+    const whatsappText = `🚨 *BALANGIR MARKET ALERT — SupplySentinel Report*
 
 ${allReports.length} cases of overpricing reported in Balangir this week.
 
 📍 *Worst case:*
 ${topReport ? `${topReport.commodity} at ${topReport.shop} (${topReport.area})
-Official: ₹${topReport.official} → Black Market: ₹${topReport.reported} (+${Math.round(((topReport.reported-topReport.official)/topReport.official)*100)}%)` : 'No reports yet.'}
+Official: ₹${topReport.official} → Black Market: ₹${topReport.reported} (+${topReport.official > 0 ? Math.round(((topReport.reported-topReport.official)/topReport.official)*100) : 0}%)` : 'No reports yet.'}
 
-📊 *Market Fairness Index: 38/100 — CRITICAL*
+📊 *Market Fairness Index: ${mfi.score}/100 — ${mfi.score < 40 ? 'CRITICAL' : mfi.score < 60 ? 'WARNING' : mfi.score < 80 ? 'CAUTION' : 'HEALTHY'}*
 
 ✅ *Track prices & report violations:*
-➡ SupplySentinel App (share this link with family)
+➡ https://supplysentinel.netlify.app
 
-🙏 Please forward to Balangir groups. Together we fight black marketing.
-</div>`;
+🙏 Please forward to Balangir groups. Together we fight black marketing.`;
+
+    content.innerHTML = `<span class="rp-header">WHATSAPP COMMUNITY MESSAGE</span>
+<div style="color:var(--text);line-height:2;font-size:12px;">${whatsappText}</div>`;
+
+    actionBtn.onclick = () => {
+      navigator.clipboard.writeText(whatsappText).then(() => {
+        showToast('💬', 'Copied!', 'Paste this in your WhatsApp groups!');
+        closeModalDirect();
+      });
+    };
+
+    // Show WhatsApp button
+    const waBtn = document.getElementById('modal-whatsapp-btn');
+    waBtn.style.display = 'inline-block';
+    waBtn.onclick = () => {
+      const encoded = encodeURIComponent(whatsappText);
+      window.open('https://wa.me/?text=' + encoded, '_blank');
+    };
   }
 
   overlay.classList.add('open');
@@ -1792,9 +1951,23 @@ function getTimeAgo(ts) {
 }
 
 // ============================================================
+// CLEAR DATA (demo reset)
+// ============================================================
+
+function clearAllData() {
+  if (confirm('This will reset all reports and data. Are you sure?')) {
+    localStorage.removeItem('ss_reports');
+    localStorage.removeItem('ss_voted');
+    localStorage.removeItem('ss_complaints_sent');
+    location.reload();
+  }
+}
+
+// ============================================================
 // INIT
 // ============================================================
 
+renderScoreCards();
 renderFeed();
 renderPriceTable();
 renderHotspots();
