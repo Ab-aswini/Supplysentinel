@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0c0f"/>
+      <stop offset="100%" style="stop-color:#111318"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff4d1c"/>
+      <stop offset="100%" style="stop-color:#ff8c42"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00e676"/>
+      <stop offset="100%" style="stop-color:#69f0ae"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.03" stroke="#ffffff" stroke-width="0.5">
+    <line x1="0" y1="0" x2="0" y2="630"/><line x1="60" y1="0" x2="60" y2="630"/>
+    <line x1="120" y1="0" x2="120" y2="630"/><line x1="180" y1="0" x2="180" y2="630"/>
+    <line x1="240" y1="0" x2="240" y2="630"/><line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="360" y1="0" x2="360" y2="630"/><line x1="420" y1="0" x2="420" y2="630"/>
+    <line x1="480" y1="0" x2="480" y2="630"/><line x1="540" y1="0" x2="540" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/><line x1="660" y1="0" x2="660" y2="630"/>
+    <line x1="720" y1="0" x2="720" y2="630"/><line x1="780" y1="0" x2="780" y2="630"/>
+    <line x1="840" y1="0" x2="840" y2="630"/><line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="960" y1="0" x2="960" y2="630"/><line x1="1020" y1="0" x2="1020" y2="630"/>
+    <line x1="1080" y1="0" x2="1080" y2="630"/><line x1="1140" y1="0" x2="1140" y2="630"/>
+    <line x1="0" y1="60" x2="1200" y2="60"/><line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="180" x2="1200" y2="180"/><line x1="0" y1="240" x2="1200" y2="240"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/><line x1="0" y1="360" x2="1200" y2="360"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/><line x1="0" y1="480" x2="1200" y2="480"/>
+    <line x1="0" y1="540" x2="1200" y2="540"/>
+  </g>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#accent)"/>
+
+  <!-- Crisis badge -->
+  <rect x="60" y="40" width="180" height="32" rx="4" fill="#ff1744" opacity="0.15"/>
+  <rect x="60" y="40" width="180" height="32" rx="4" stroke="#ff1744" stroke-width="1" fill="none"/>
+  <circle cx="78" cy="56" r="5" fill="#ff1744">
+    <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <text x="92" y="61" font-family="monospace" font-size="13" font-weight="700" fill="#ff1744" letter-spacing="1.5">LPG CRISIS ACTIVE</text>
+
+  <!-- Main title -->
+  <text x="60" y="135" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="800" fill="#e8eaf0" letter-spacing="-1">SupplySentinel</text>
+
+  <!-- Subtitle -->
+  <text x="60" y="175" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#ff8c42">Fighting Black Markets with Citizen Data</text>
+
+  <!-- Divider line -->
+  <line x1="60" y1="200" x2="500" y2="200" stroke="#2a3040" stroke-width="1"/>
+
+  <!-- Price comparison boxes -->
+  <!-- Official Price -->
+  <rect x="60" y="230" width="240" height="120" rx="8" fill="#111318" stroke="#1e2530" stroke-width="1"/>
+  <text x="80" y="260" font-family="monospace" font-size="11" fill="#8892a4" letter-spacing="1">OFFICIAL PRICE</text>
+  <text x="80" y="300" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="700" fill="#00e676">&#8377;939</text>
+  <text x="80" y="330" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8892a4">LPG Cylinder (14.2kg)</text>
+
+  <!-- Arrow -->
+  <text x="325" y="300" font-family="Arial" font-size="32" fill="#4a5568">&#8594;</text>
+
+  <!-- Black Market Price -->
+  <rect x="370" y="230" width="240" height="120" rx="8" fill="#111318" stroke="#ff1744" stroke-width="1"/>
+  <text x="390" y="260" font-family="monospace" font-size="11" fill="#ff1744" letter-spacing="1">BLACK MARKET</text>
+  <text x="390" y="300" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="700" fill="#ff1744">&#8377;2,500+</text>
+  <text x="390" y="330" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8892a4">167% above MRP</text>
+
+  <!-- MFI Score -->
+  <rect x="660" y="230" width="200" height="120" rx="8" fill="#111318" stroke="#ff1744" stroke-width="1"/>
+  <text x="680" y="260" font-family="monospace" font-size="11" fill="#8892a4" letter-spacing="1">MARKET FAIRNESS</text>
+  <text x="680" y="305" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="800" fill="#ff1744">38</text>
+  <text x="745" y="305" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#4a5568">/100</text>
+  <text x="680" y="335" font-family="monospace" font-size="12" font-weight="700" fill="#ff1744">CRITICAL</text>
+
+  <!-- Reports count -->
+  <rect x="890" y="230" width="250" height="120" rx="8" fill="#111318" stroke="#1e2530" stroke-width="1"/>
+  <text x="910" y="260" font-family="monospace" font-size="11" fill="#8892a4" letter-spacing="1">CITIZEN REPORTS</text>
+  <text x="910" y="305" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="800" fill="#ffd740">12</text>
+  <text x="910" y="335" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8892a4">from 5 areas this week</text>
+
+  <!-- Feature tags -->
+  <rect x="60" y="385" width="160" height="30" rx="4" fill="rgba(255,77,28,0.1)" stroke="#ff4d1c" stroke-width="0.5"/>
+  <text x="80" y="405" font-family="monospace" font-size="12" fill="#ff8c42">Anonymous Reports</text>
+
+  <rect x="235" y="385" width="130" height="30" rx="4" fill="rgba(0,230,118,0.1)" stroke="#00e676" stroke-width="0.5"/>
+  <text x="252" y="405" font-family="monospace" font-size="12" fill="#00e676">Live Feed</text>
+
+  <rect x="380" y="385" width="170" height="30" rx="4" fill="rgba(255,215,64,0.1)" stroke="#ffd740" stroke-width="0.5"/>
+  <text x="397" y="405" font-family="monospace" font-size="12" fill="#ffd740">Hotspot Detection</text>
+
+  <rect x="565" y="385" width="175" height="30" rx="4" fill="rgba(255,23,68,0.1)" stroke="#ff1744" stroke-width="0.5"/>
+  <text x="582" y="405" font-family="monospace" font-size="12" fill="#ff1744">DC Complaint Gen</text>
+
+  <rect x="755" y="385" width="160" height="30" rx="4" fill="rgba(99,179,237,0.1)" stroke="#63b3ed" stroke-width="0.5"/>
+  <text x="775" y="405" font-family="monospace" font-size="12" fill="#63b3ed">WhatsApp Share</text>
+
+  <rect x="930" y="385" width="200" height="30" rx="4" fill="rgba(255,140,66,0.1)" stroke="#ff8c42" stroke-width="0.5"/>
+  <text x="950" y="405" font-family="monospace" font-size="12" fill="#ff8c42">Market Fairness Index</text>
+
+  <!-- Bottom section -->
+  <line x1="0" y1="460" x2="1200" y2="460" stroke="#1e2530" stroke-width="1"/>
+
+  <!-- Description -->
+  <text x="60" y="500" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#e8eaf0">Open-source price transparency platform for every Indian district.</text>
+  <text x="60" y="530" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#8892a4">No login. No cost. No framework. Just citizen data fighting exploitation.</text>
+
+  <!-- Origin badge -->
+  <text x="60" y="580" font-family="monospace" font-size="13" fill="#4a5568">Born in Balangir, Odisha</text>
+  <text x="280" y="580" font-family="monospace" font-size="13" fill="#4a5568">|</text>
+  <text x="300" y="580" font-family="monospace" font-size="13" fill="#4a5568">Built for 780+ districts</text>
+  <text x="540" y="580" font-family="monospace" font-size="13" fill="#4a5568">|</text>
+  <text x="560" y="580" font-family="monospace" font-size="13" fill="#4a5568">MIT License</text>
+
+  <!-- URL -->
+  <text x="1140" y="580" font-family="monospace" font-size="14" fill="#ff4d1c" text-anchor="end">supplysentinel.netlify.app</text>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="626" width="1200" height="4" fill="url(#accent)"/>
+</svg>
