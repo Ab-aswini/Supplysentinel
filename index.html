@@ -1311,10 +1311,23 @@
 
 <script>
 // ============================================================
-// DATA STORE
+// CONFIG-DRIVEN DATA STORE
 // ============================================================
+// All district-specific data is loaded from config/balangir.json
+// To deploy for your district: copy config/example-cuttack.json,
+// rename it, edit 5 fields, and update CONFIG_PATH below.
 
-const OFFICIAL_PRICES = {
+const CONFIG_PATH = 'config/balangir.json';
+
+// These will be populated from config (with hardcoded fallbacks)
+let DISTRICT_CONFIG = null;
+let OFFICIAL_PRICES = {};
+let MARKET_PRICES = {};
+let HOTSPOTS = [];
+let SEED_REPORTS = [];
+
+// Hardcoded fallback data (used if config fetch fails)
+const FALLBACK_OFFICIAL_PRICES = {
   'LPG Cylinder (14.2kg)': { price: 939, unit: 'cylinder', icon: '🔥' },
   'Mustard Oil (1L)': { price: 145, unit: 'liter', icon: '🫙' },
   'Sugar (1kg)': { price: 42, unit: 'kg', icon: '🍚' },
@@ -1327,19 +1340,13 @@ const OFFICIAL_PRICES = {
   'Other': { price: null, unit: '', icon: '📦' },
 };
 
-const MARKET_PRICES = {
-  'LPG Cylinder (14.2kg)': 1800,
-  'Mustard Oil (1L)': 185,
-  'Sugar (1kg)': 50,
-  'Rice (1kg)': 38,
-  'Wheat Atta (1kg)': 36,
-  'Onion (1kg)': 65,
-  'Tomato (1kg)': 80,
-  'Toor Dal (1kg)': 175,
-  'Petrol (1L)': 105,
+const FALLBACK_MARKET_PRICES = {
+  'LPG Cylinder (14.2kg)': 1800, 'Mustard Oil (1L)': 185, 'Sugar (1kg)': 50,
+  'Rice (1kg)': 38, 'Wheat Atta (1kg)': 36, 'Onion (1kg)': 65,
+  'Tomato (1kg)': 80, 'Toor Dal (1kg)': 175, 'Petrol (1L)': 105,
 };
 
-const HOTSPOTS = [
+const FALLBACK_HOTSPOTS = [
   { area: 'Gandhi Chowk', reports: 4, level: 'high' },
   { area: 'Bus Stand', reports: 3, level: 'high' },
   { area: 'Cantonment Rd', reports: 3, level: 'high' },
@@ -1350,7 +1357,131 @@ const HOTSPOTS = [
   { area: 'Nehru Nagar', reports: 1, level: 'low' },
 ];
 
-// Load reports from localStorage
+// ============================================================
+// CONFIG LOADER
+// ============================================================
+
+function applyConfig(config) {
+  DISTRICT_CONFIG = config;
+
+  // Build OFFICIAL_PRICES from config
+  OFFICIAL_PRICES = {};
+  config.commodities.forEach(c => {
+    OFFICIAL_PRICES[c.name] = { price: c.officialPrice, unit: c.unit, icon: c.icon };
+  });
+  OFFICIAL_PRICES['Other'] = { price: null, unit: '', icon: '📦' };
+
+  // Build MARKET_PRICES from config
+  MARKET_PRICES = {};
+  config.commodities.forEach(c => {
+    MARKET_PRICES[c.name] = c.marketPrice || c.officialPrice;
+  });
+
+  // Build HOTSPOTS from config
+  HOTSPOTS = (config.hotspots || []).map(h => ({ ...h }));
+
+  // Build SEED_REPORTS from config
+  SEED_REPORTS = (config.seedReports || []).map(r => ({
+    ...r,
+    time: Date.now() - (r.hoursAgo || 1) * 3600000
+  }));
+
+  // Update UI with district name
+  const locationTag = document.querySelector('.location-tag');
+  if (locationTag) locationTag.textContent = `${config.district.toUpperCase()}, ${config.state.toUpperCase()}`;
+
+  // Update crisis badge
+  if (config.crisis && config.crisis.active) {
+    const crisisBadge = document.querySelector('.crisis-badge');
+    if (crisisBadge) {
+      const commodity = config.crisis.commodity.split(' ')[0]; // e.g. "LPG"
+      crisisBadge.innerHTML = `<div class="crisis-dot"></div>${commodity} Crisis Active`;
+    }
+    const alertBanner = document.querySelector('.alert-banner');
+    if (alertBanner) {
+      alertBanner.innerHTML = `⚠️ <strong>Active Crisis Alert:</strong> ${config.crisis.message} <strong>Report violations below.</strong>`;
+    }
+  } else {
+    // Hide crisis elements if no active crisis
+    const crisisBadge = document.querySelector('.crisis-badge');
+    if (crisisBadge) crisisBadge.style.display = 'none';
+    const alertBanner = document.querySelector('.alert-banner');
+    if (alertBanner) alertBanner.style.display = 'none';
+  }
+
+  // Update hotspot panel title
+  const hotspotTitle = document.querySelector('.panel-title');
+  document.querySelectorAll('.panel-title').forEach(el => {
+    if (el.textContent.includes('Hotspots')) {
+      el.textContent = `Price Gouging Hotspots — ${config.district}`;
+    }
+  });
+
+  // Update area dropdown in form
+  const areaSelect = document.getElementById('f-area');
+  if (areaSelect) {
+    areaSelect.innerHTML = '<option value="">Select area...</option>';
+    config.areas.forEach(area => {
+      const opt = document.createElement('option');
+      opt.value = area;
+      opt.textContent = area;
+      areaSelect.appendChild(opt);
+    });
+    const otherOpt = document.createElement('option');
+    otherOpt.value = 'Other';
+    otherOpt.textContent = 'Other';
+    areaSelect.appendChild(otherOpt);
+  }
+
+  // Update commodity dropdown in form
+  const commoditySelect = document.getElementById('f-commodity');
+  if (commoditySelect) {
+    commoditySelect.innerHTML = '<option value="">Select commodity...</option>';
+    config.commodities.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.name;
+      opt.textContent = c.name;
+      commoditySelect.appendChild(opt);
+    });
+    const otherOpt = document.createElement('option');
+    otherOpt.value = 'Other';
+    otherOpt.textContent = 'Other (specify in notes)';
+    commoditySelect.appendChild(otherOpt);
+  }
+
+  // Update complaint generator text
+  const rgInfo = document.querySelector('.rg-info p');
+  if (rgInfo) {
+    rgInfo.textContent = `Auto-compile all reported violations into a formal complaint letter addressed to the ${config.district} District Collector and Civil Supplies Officer. One click — ready to email or print.`;
+  }
+}
+
+function useFallbackData() {
+  OFFICIAL_PRICES = { ...FALLBACK_OFFICIAL_PRICES };
+  MARKET_PRICES = { ...FALLBACK_MARKET_PRICES };
+  HOTSPOTS = FALLBACK_HOTSPOTS.map(h => ({ ...h }));
+  DISTRICT_CONFIG = {
+    district: 'Balangir', state: 'Odisha', country: 'India',
+    liveUrl: 'https://supplysentinel.netlify.app',
+    repoUrl: 'https://github.com/Ab-aswini/Supplysentinel',
+    officialContacts: {
+      districtCollector: { name: 'District Collector, Balangir', email: 'balangir-collector@nic.in' },
+      civilSupplies: { name: 'Civil Supplies Officer, Balangir', email: '' }
+    }
+  };
+  SEED_REPORTS = [
+    { id: 'r1', commodity: 'LPG Cylinder (14.2kg)', shop: 'Mahesh Gas Agency', area: 'Gandhi Chowk', official: 939, reported: 2500, severity: 'extreme', notes: 'Denied having stock, then offered at ₹2500 for cash', time: Date.now() - 3600000, upvotes: 7, icon: '🔥' },
+    { id: 'r2', commodity: 'Mustard Oil (1L)', shop: 'Raju General Store', area: 'Bus Stand Area', official: 145, reported: 210, severity: 'moderate', notes: 'Claiming supply from Raipur is stopped', time: Date.now() - 7200000, upvotes: 4, icon: '🫙' },
+    { id: 'r3', commodity: 'LPG Cylinder (14.2kg)', shop: 'Santoshi Distributors', area: 'Cantonment Road', official: 939, reported: 1800, severity: 'severe', notes: 'No receipt given', time: Date.now() - 86400000, upvotes: 9, icon: '🔥' },
+    { id: 'r4', commodity: 'Sugar (1kg)', shop: 'Laxmi Kirana', area: 'Court Road', official: 42, reported: 58, severity: 'moderate', notes: '', time: Date.now() - 172800000, upvotes: 2, icon: '🍚' },
+    { id: 'r5', commodity: 'Toor Dal (1kg)', shop: 'Om Namah Store', area: 'Bus Stand Area', official: 155, reported: 220, severity: 'moderate', notes: 'Said new stock coming next week', time: Date.now() - 259200000, upvotes: 3, icon: '🫘' },
+  ];
+}
+
+// ============================================================
+// REPORTS PERSISTENCE
+// ============================================================
+
 function loadReports() {
   try {
     return JSON.parse(localStorage.getItem('ss_reports') || '[]');
@@ -1361,49 +1492,10 @@ function saveReports(reports) {
   localStorage.setItem('ss_reports', JSON.stringify(reports));
 }
 
-// Seed reports if none exist
-const SEED_REPORTS = [
-  {
-    id: 'r1', commodity: 'LPG Cylinder (14.2kg)', shop: 'Mahesh Gas Agency',
-    area: 'Gandhi Chowk', official: 939, reported: 2500,
-    severity: 'extreme', notes: 'Denied having stock, then offered at ₹2500 for cash',
-    time: Date.now() - 3600000, upvotes: 7, icon: '🔥'
-  },
-  {
-    id: 'r2', commodity: 'Mustard Oil (1L)', shop: 'Raju General Store',
-    area: 'Bus Stand Area', official: 145, reported: 210,
-    severity: 'moderate', notes: 'Claiming supply from Raipur is stopped',
-    time: Date.now() - 7200000, upvotes: 4, icon: '🫙'
-  },
-  {
-    id: 'r3', commodity: 'LPG Cylinder (14.2kg)', shop: 'Santoshi Distributors',
-    area: 'Cantonment Road', official: 939, reported: 1800,
-    severity: 'severe', notes: 'No receipt given',
-    time: Date.now() - 86400000, upvotes: 9, icon: '🔥'
-  },
-  {
-    id: 'r4', commodity: 'Sugar (1kg)', shop: 'Laxmi Kirana',
-    area: 'Court Road', official: 42, reported: 58,
-    severity: 'moderate', notes: '',
-    time: Date.now() - 172800000, upvotes: 2, icon: '🍚'
-  },
-  {
-    id: 'r5', commodity: 'Toor Dal (1kg)', shop: 'Om Namah Store',
-    area: 'Bus Stand Area', official: 155, reported: 220,
-    severity: 'moderate', notes: 'Said new stock coming next week',
-    time: Date.now() - 259200000, upvotes: 3, icon: '🫘'
-  },
-];
-
-let allReports = loadReports();
-if (allReports.length === 0) {
-  allReports = SEED_REPORTS;
-  saveReports(allReports);
-}
-
+let allReports = [];
 let votedReports = new Set(JSON.parse(localStorage.getItem('ss_voted') || '[]'));
 let currentFilter = 'all';
-let areaFilter = null; // for hotspot click filtering
+let areaFilter = null;
 
 // ============================================================
 // MFI & SUPPLY HEALTH CALCULATION
@@ -1509,7 +1601,7 @@ function renderScoreCards() {
     <div class="score-card" style="--card-glow: rgba(255,77,28,0.08);">
       <div class="score-label">Reports This Week</div>
       <div class="score-value" style="color: var(--accent2);"><span class="counter" id="report-count">${reportCount}</span></div>
-      <div class="score-sub">From <span id="area-count">${areas.size}</span> areas in Balangir</div>
+      <div class="score-sub">From <span id="area-count">${areas.size}</span> areas in ${DISTRICT_CONFIG ? DISTRICT_CONFIG.district : 'Balangir'}</div>
       <div class="score-bar"><div class="score-bar-fill" style="width:${Math.min(reportCount * 5, 100)}%; background: var(--accent2);"></div></div>
     </div>
     <div class="score-card" style="--card-glow: rgba(0,230,118,0.06);">
@@ -1841,18 +1933,18 @@ function openReportModal(type) {
 
     content.innerHTML = `
 <span class="rp-header">FORMAL COMPLAINT — MARKET PRICE VIOLATIONS</span>
-<div class="rp-row"><span class="rp-label">To:</span><span class="rp-val">District Collector, Balangir, Odisha</span></div>
-<div class="rp-row"><span class="rp-label">CC:</span><span class="rp-val">Civil Supplies Officer, Balangir District</span></div>
+<div class="rp-row"><span class="rp-label">To:</span><span class="rp-val">${DISTRICT_CONFIG ? DISTRICT_CONFIG.officialContacts.districtCollector.name + ', ' + DISTRICT_CONFIG.state : 'District Collector, Balangir, Odisha'}</span></div>
+<div class="rp-row"><span class="rp-label">CC:</span><span class="rp-val">${DISTRICT_CONFIG ? DISTRICT_CONFIG.officialContacts.civilSupplies.name : 'Civil Supplies Officer, Balangir District'}</span></div>
 <div class="rp-row"><span class="rp-label">Subject:</span><span class="rp-val">Illegal Overpricing & Hoarding of Essential Commodities</span></div>
 <div class="rp-row"><span class="rp-label">Date:</span><span class="rp-val">${today}</span></div>
-<div class="rp-row"><span class="rp-label">Platform:</span><span class="rp-val">SupplySentinel — Citizen Price Watch, Balangir</span></div>
+<div class="rp-row"><span class="rp-label">Platform:</span><span class="rp-val">SupplySentinel — Citizen Price Watch, ${DISTRICT_CONFIG ? DISTRICT_CONFIG.district : 'Balangir'}</span></div>
 <div class="rp-row"><span class="rp-label">Total Reports:</span><span class="rp-val">${allReports.length} (${severeReports.length} severe/extreme violations)</span></div>
 
 <br>
 <div style="color:var(--text2);line-height:1.9;font-size:11px;">
 Sir/Madam,
 
-This is a formal complaint compiled by SupplySentinel, a citizen-driven price monitoring initiative for Balangir district. The following verified violations of Maximum Retail Price (MRP) on essential commodities have been reported by residents between ${new Date(Math.min(...allReports.map(r=>r.time))).toLocaleDateString('en-IN')} and ${today}.
+This is a formal complaint compiled by SupplySentinel, a citizen-driven price monitoring initiative for ${DISTRICT_CONFIG ? DISTRICT_CONFIG.district : 'Balangir'} district. The following verified violations of Maximum Retail Price (MRP) on essential commodities have been reported by residents between ${new Date(Math.min(...allReports.map(r=>r.time))).toLocaleDateString('en-IN')} and ${today}.
 
 VIOLATION SUMMARY:
 ${severeReports.map((r, i) => `
@@ -1867,9 +1959,9 @@ ${i+1}. ${r.commodity}
 
 We respectfully request an immediate inspection of the above establishments under the Essential Commodities Act, 1955 and relevant provisions of the Consumer Protection Act, 2019.
 
-Submitted on behalf of Balangir citizens via SupplySentinel.
-https://supplysentinel.netlify.app
-Source: https://github.com/Ab-aswini/Supplysentinel
+Submitted on behalf of ${DISTRICT_CONFIG ? DISTRICT_CONFIG.district : 'Balangir'} citizens via SupplySentinel.
+${DISTRICT_CONFIG ? DISTRICT_CONFIG.liveUrl : 'https://supplysentinel.netlify.app'}
+Source: ${DISTRICT_CONFIG ? DISTRICT_CONFIG.repoUrl : 'https://github.com/Ab-aswini/Supplysentinel'}
 </div>`;
 
   } else if (type === 'whatsapp') {
@@ -1881,9 +1973,12 @@ Source: https://github.com/Ab-aswini/Supplysentinel
     const sortedReports = [...allReports].sort((a,b) => b.upvotes - a.upvotes);
     const topReport = sortedReports[0];
 
-    const whatsappText = `🚨 *BALANGIR MARKET ALERT — SupplySentinel Report*
+    const distName = DISTRICT_CONFIG ? DISTRICT_CONFIG.district.toUpperCase() : 'BALANGIR';
+    const distNameLower = DISTRICT_CONFIG ? DISTRICT_CONFIG.district : 'Balangir';
+    const siteUrl = DISTRICT_CONFIG ? DISTRICT_CONFIG.liveUrl : 'https://supplysentinel.netlify.app';
+    const whatsappText = `🚨 *${distName} MARKET ALERT — SupplySentinel Report*
 
-${allReports.length} cases of overpricing reported in Balangir this week.
+${allReports.length} cases of overpricing reported in ${distNameLower} this week.
 
 📍 *Worst case:*
 ${topReport ? `${topReport.commodity} at ${topReport.shop} (${topReport.area})
@@ -1892,9 +1987,9 @@ Official: ₹${topReport.official} → Black Market: ₹${topReport.reported} (+
 📊 *Market Fairness Index: ${mfi.score}/100 — ${mfi.score < 40 ? 'CRITICAL' : mfi.score < 60 ? 'WARNING' : mfi.score < 80 ? 'CAUTION' : 'HEALTHY'}*
 
 ✅ *Track prices & report violations:*
-➡ https://supplysentinel.netlify.app
+➡ ${siteUrl}
 
-🙏 Please forward to Balangir groups. Together we fight black marketing.`;
+🙏 Please forward to ${distNameLower} groups. Together we fight black marketing.`;
 
     content.innerHTML = `<span class="rp-header">WHATSAPP COMMUNITY MESSAGE</span>
 <div style="color:var(--text);line-height:2;font-size:12px;">${whatsappText}</div>`;
@@ -1964,13 +2059,40 @@ function clearAllData() {
 }
 
 // ============================================================
-// INIT
+// INIT — Load config, then render everything
 // ============================================================
 
-renderScoreCards();
-renderFeed();
-renderPriceTable();
-renderHotspots();
+async function init() {
+  // Try to load district config
+  try {
+    const resp = await fetch(CONFIG_PATH);
+    if (resp.ok) {
+      const config = await resp.json();
+      applyConfig(config);
+      console.log(`[SupplySentinel] Config loaded: ${config.district}, ${config.state}`);
+    } else {
+      throw new Error('Config fetch failed: ' + resp.status);
+    }
+  } catch (err) {
+    console.warn('[SupplySentinel] Config load failed, using fallback data:', err.message);
+    useFallbackData();
+  }
+
+  // Load reports from localStorage or use seed data
+  allReports = loadReports();
+  if (allReports.length === 0 && SEED_REPORTS.length > 0) {
+    allReports = SEED_REPORTS;
+    saveReports(allReports);
+  }
+
+  // Render everything
+  renderScoreCards();
+  renderFeed();
+  renderPriceTable();
+  renderHotspots();
+}
+
+init();
 </script>
 </body>
 </html>

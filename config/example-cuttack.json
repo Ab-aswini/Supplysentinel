@@ -1,0 +1,77 @@
+{
+  "district": "Cuttack",
+  "state": "Odisha",
+  "country": "India",
+  "language": "en",
+  "liveUrl": "https://your-deployment-url.netlify.app",
+  "repoUrl": "https://github.com/your-username/Supplysentinel",
+
+  "crisis": {
+    "active": false,
+    "commodity": "",
+    "officialPrice": 0,
+    "blackMarketPrice": 0,
+    "message": ""
+  },
+
+  "areas": [
+    "Buxi Bazaar",
+    "Badambadi",
+    "College Square",
+    "Choudhury Bazaar",
+    "Mangalabag",
+    "Ranihat",
+    "Tulsipur",
+    "Naya Bazaar",
+    "Mahanadi Vihar",
+    "Bidanasi"
+  ],
+
+  "hotspots": [
+    { "area": "Buxi Bazaar", "reports": 0, "level": "low" },
+    { "area": "Badambadi", "reports": 0, "level": "low" },
+    { "area": "College Square", "reports": 0, "level": "low" },
+    { "area": "Choudhury Bazaar", "reports": 0, "level": "low" },
+    { "area": "Mangalabag", "reports": 0, "level": "low" },
+    { "area": "Ranihat", "reports": 0, "level": "low" },
+    { "area": "Tulsipur", "reports": 0, "level": "low" },
+    { "area": "Naya Bazaar", "reports": 0, "level": "low" }
+  ],
+
+  "officialContacts": {
+    "districtCollector": {
+      "name": "District Collector, Cuttack",
+      "email": "cuttack-collector@nic.in",
+      "role": "District Administration"
+    },
+    "civilSupplies": {
+      "name": "Civil Supplies Officer, Cuttack",
+      "email": "",
+      "role": "Essential Commodities Regulation"
+    }
+  },
+
+  "consumerHelpline": "1800-11-4000",
+
+  "commodities": [
+    { "name": "LPG Cylinder (14.2kg)", "officialPrice": 939, "marketPrice": 939, "unit": "cylinder", "icon": "🔥" },
+    { "name": "Mustard Oil (1L)", "officialPrice": 145, "marketPrice": 145, "unit": "liter", "icon": "🫙" },
+    { "name": "Sugar (1kg)", "officialPrice": 42, "marketPrice": 42, "unit": "kg", "icon": "🍚" },
+    { "name": "Rice (1kg)", "officialPrice": 38, "marketPrice": 38, "unit": "kg", "icon": "🌾" },
+    { "name": "Wheat Atta (1kg)", "officialPrice": 35, "marketPrice": 35, "unit": "kg", "icon": "🌾" },
+    { "name": "Onion (1kg)", "officialPrice": 40, "marketPrice": 40, "unit": "kg", "icon": "🧅" },
+    { "name": "Tomato (1kg)", "officialPrice": 35, "marketPrice": 35, "unit": "kg", "icon": "🍅" },
+    { "name": "Toor Dal (1kg)", "officialPrice": 155, "marketPrice": 155, "unit": "kg", "icon": "🫘" },
+    { "name": "Petrol (1L)", "officialPrice": 105, "marketPrice": 105, "unit": "liter", "icon": "⛽" }
+  ],
+
+  "seedReports": [],
+
+  "dataSources": {
+    "lpg": "https://ppac.gov.in",
+    "essentialCommodities": "https://consumeraffairs.nic.in/price-monitoring-cell",
+    "odishaCivilSupplies": "http://www.foododisha.in",
+    "nationalConsumerHelpline": "https://consumerhelpline.gov.in",
+    "odishaFoodSupplies": "https://foodsupply.odisha.gov.in"
+  }
+}
