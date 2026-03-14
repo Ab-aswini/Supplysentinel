@@ -872,6 +872,148 @@
   }
 
   /* GENERATE REPORT */
+  /* AI EXPLAINER */
+  .ai-explainer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .ai-explainer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-explainer-header .ai-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .ai-explainer-header .ai-badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(138,43,226,0.12);
+    color: #b388ff;
+    border: 1px solid rgba(138,43,226,0.25);
+    letter-spacing: 0.5px;
+  }
+  .ai-prompt-row {
+    display: flex;
+    gap: 10px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-prompt-row select {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .ai-prompt-row select:focus {
+    outline: none;
+    border-color: #b388ff;
+  }
+  .ai-btn {
+    background: linear-gradient(135deg, #7c3aed, #b388ff);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+  .ai-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .ai-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .ai-response {
+    padding: 20px;
+    min-height: 60px;
+  }
+  .ai-response.loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text2);
+    font-size: 13px;
+  }
+  .ai-response .ai-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border2);
+    border-top-color: #b388ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .ai-response .ai-text {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .ai-response .ai-text p {
+    margin-bottom: 10px;
+  }
+  .ai-response .ai-text strong {
+    color: #b388ff;
+  }
+  .ai-response .ai-text ul {
+    margin: 8px 0 12px 18px;
+    color: var(--text2);
+  }
+  .ai-response .ai-text ul li {
+    margin-bottom: 4px;
+  }
+  .ai-empty {
+    color: var(--text3);
+    font-size: 13px;
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+  }
+  .ai-footer {
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ai-footer .ai-disclaimer {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
+  .ai-footer .ai-key-link {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #b388ff;
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+  }
+
   .report-generator {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -1336,6 +1478,34 @@
     </div>
   </div>
 
+  <!-- AI SUPPLY EXPLAINER -->
+  <div class="ai-explainer">
+    <div class="ai-explainer-header">
+      <div class="ai-label">
+        <span>🤖</span>
+        <span data-i18n="ai_title">AI Supply Explainer</span>
+      </div>
+      <span class="ai-badge">GEMINI 1.5 FLASH</span>
+    </div>
+    <div class="ai-prompt-row">
+      <select id="ai-question">
+        <option value="summary" data-i18n-opt="ai_q_summary">Explain the current market situation</option>
+        <option value="why" data-i18n-opt="ai_q_why">Why are prices rising in this area?</option>
+        <option value="rights" data-i18n-opt="ai_q_rights">What are my consumer rights?</option>
+        <option value="action" data-i18n-opt="ai_q_action">What action can I take against overcharging?</option>
+        <option value="predict" data-i18n-opt="ai_q_predict">Will prices go down soon?</option>
+      </select>
+      <button class="ai-btn" id="ai-ask-btn" onclick="askAI()" data-i18n="ai_ask">✨ Ask AI</button>
+    </div>
+    <div class="ai-response" id="ai-response">
+      <div class="ai-empty" data-i18n="ai_empty">Select a question and click "Ask AI" to get an intelligent analysis based on current report data.</div>
+    </div>
+    <div class="ai-footer">
+      <span class="ai-disclaimer" data-i18n="ai_disclaimer">AI-generated · Not legal advice · Based on report data</span>
+      <button class="ai-key-link" onclick="promptGeminiKey()" data-i18n="ai_set_key">🔑 Set API Key</button>
+    </div>
+  </div>
+
   <!-- REPORT GENERATOR -->
   <div class="report-generator">
     <div class="rg-info">
@@ -1511,6 +1681,20 @@ const i18n = {
     footer_built: 'Built for Balangir, Odisha',
     footer_reset: 'Reset Demo Data',
     footer_star: '⭐ Star on GitHub',
+    // AI Explainer
+    ai_title: 'AI Supply Explainer',
+    ai_ask: '✨ Ask AI',
+    ai_empty: 'Select a question and click "Ask AI" to get an intelligent analysis based on current report data.',
+    ai_disclaimer: 'AI-generated · Not legal advice · Based on report data',
+    ai_set_key: '🔑 Set API Key',
+    ai_loading: 'Analyzing market data...',
+    ai_error: 'Could not get AI response. Please check your API key.',
+    ai_no_key: 'Please set your Gemini API key first.',
+    ai_q_summary: 'Explain the current market situation',
+    ai_q_why: 'Why are prices rising in this area?',
+    ai_q_rights: 'What are my consumer rights?',
+    ai_q_action: 'What action can I take against overcharging?',
+    ai_q_predict: 'Will prices go down soon?',
   },
   or: {
     // Header
@@ -1611,6 +1795,20 @@ const i18n = {
     footer_built: 'ବଲାଙ୍ଗୀର, ଓଡ଼ିଶା ପାଇଁ ନିର୍ମିତ',
     footer_reset: 'ଡେମୋ ଡାଟା ରିସେଟ',
     footer_star: '⭐ GitHub ରେ ଷ୍ଟାର',
+    // AI Explainer
+    ai_title: 'AI ଯୋଗାଣ ବ୍ୟାଖ୍ୟାକାରୀ',
+    ai_ask: '✨ AI ପଚାରନ୍ତୁ',
+    ai_empty: 'ଏକ ପ୍ରଶ୍ନ ବାଛନ୍ତୁ ଏବଂ ବର୍ତ୍ତମାନ ରିପୋର୍ଟ ଡାଟା ଉପରେ ଆଧାରିତ ବିଶ୍ଳେଷଣ ପାଇଁ "AI ପଚାରନ୍ତୁ" କ୍ଲିକ କରନ୍ତୁ।',
+    ai_disclaimer: 'AI-ଦ୍ୱାରା ସୃଷ୍ଟ · ଆଇନଗତ ପରାମର୍ଶ ନୁହେଁ · ରିପୋର୍ଟ ଡାଟା ଉପରେ ଆଧାରିତ',
+    ai_set_key: '🔑 API କି ସେଟ କରନ୍ତୁ',
+    ai_loading: 'ବଜାର ଡାଟା ବିଶ୍ଳେଷଣ କରୁଛି...',
+    ai_error: 'AI ଉତ୍ତର ମିଳିପାରିଲା ନାହିଁ। ଦୟାକରି API କି ଯାଞ୍ଚ କରନ୍ତୁ।',
+    ai_no_key: 'ଦୟାକରି ପ୍ରଥମେ ଆପଣଙ୍କ Gemini API କି ସେଟ କରନ୍ତୁ।',
+    ai_q_summary: 'ବର୍ତ୍ତମାନ ବଜାର ସ୍ଥିତି ବ୍ୟାଖ୍ୟା କରନ୍ତୁ',
+    ai_q_why: 'ଏହି ଅଞ୍ଚଳରେ ମୂଲ୍ୟ କାହିଁକି ବଢ଼ୁଛି?',
+    ai_q_rights: 'ମୋର ଗ୍ରାହକ ଅଧିକାର କ\'ଣ?',
+    ai_q_action: 'ଅଧିକ ମୂଲ୍ୟ ବିରୁଦ୍ଧରେ ମୁଁ କ\'ଣ କାର୍ଯ୍ୟ କରିପାରିବି?',
+    ai_q_predict: 'ମୂଲ୍ୟ ଶୀଘ୍ର କମିବ କି?',
   }
 };
 
@@ -1673,6 +1871,12 @@ function updatePlaceholders() {
   if (fArea && fArea.options[0]) fArea.options[0].textContent = t('ph_select_area');
   const fNotes = document.getElementById('f-notes');
   if (fNotes) fNotes.placeholder = t('ph_notes');
+  // AI question dropdown
+  const aiQ = document.getElementById('ai-question');
+  if (aiQ) {
+    const keys = ['ai_q_summary', 'ai_q_why', 'ai_q_rights', 'ai_q_action', 'ai_q_predict'];
+    keys.forEach((k, i) => { if (aiQ.options[i]) aiQ.options[i].textContent = t(k); });
+  }
 }
 
 // These will be populated from config (with hardcoded fallbacks)
@@ -2474,6 +2678,148 @@ function clearAllData() {
     localStorage.removeItem('ss_voted');
     localStorage.removeItem('ss_complaints_sent');
     location.reload();
+  }
+}
+
+// ============================================================
+// AI SUPPLY EXPLAINER (Gemini 1.5 Flash)
+// ============================================================
+
+const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+
+function getGeminiKey() {
+  return localStorage.getItem('ss_gemini_key') || '';
+}
+
+function promptGeminiKey() {
+  const current = getGeminiKey();
+  const key = prompt(
+    'Enter your Gemini API Key (free from aistudio.google.com):\n\nThis is stored only in your browser localStorage — never sent to our servers.',
+    current
+  );
+  if (key !== null) {
+    localStorage.setItem('ss_gemini_key', key.trim());
+    showToast('🔑', 'API Key Saved', 'Your Gemini API key has been saved locally.');
+  }
+}
+
+function buildAIContext() {
+  const district = DISTRICT_CONFIG ? DISTRICT_CONFIG.district : 'Balangir';
+  const state = DISTRICT_CONFIG ? DISTRICT_CONFIG.state : 'Odisha';
+  const mfi = calculateMFI();
+  const supply = calculateSupplyHealth();
+  const reportCount = allReports.length;
+
+  // Top violations
+  const violations = allReports
+    .filter(r => r.reported > r.official && r.official > 0)
+    .sort((a, b) => (b.reported - b.official) - (a.reported - a.official))
+    .slice(0, 5);
+
+  const violationSummary = violations.map(v => {
+    const pct = Math.round(((v.reported - v.official) / v.official) * 100);
+    return `${v.commodity}: Official ₹${v.official} → Reported ₹${v.reported} (+${pct}%) at ${v.shop}, ${v.area} [${v.severity}]`;
+  }).join('\n');
+
+  // Commodity breakdown
+  const commodityCounts = {};
+  allReports.forEach(r => { commodityCounts[r.commodity] = (commodityCounts[r.commodity] || 0) + 1; });
+  const commodityStr = Object.entries(commodityCounts).map(([k, v]) => `${k}: ${v} reports`).join(', ');
+
+  // Area breakdown
+  const areaCounts = {};
+  allReports.forEach(r => { areaCounts[r.area] = (areaCounts[r.area] || 0) + 1; });
+  const areaStr = Object.entries(areaCounts).map(([k, v]) => `${k}: ${v}`).join(', ');
+
+  const lang = currentLang === 'or' ? 'Odia (ଓଡ଼ିଆ)' : 'English';
+
+  return `You are an AI assistant for SupplySentinel, a citizen-powered price transparency platform in ${district}, ${state}, India.
+
+CURRENT DATA:
+- Total reports: ${reportCount}
+- Market Fairness Index: ${mfi.score}/100 (${mfi.label})
+- Supply Health Score: ${supply.score}/100
+- Commodities reported: ${commodityStr}
+- Areas affected: ${areaStr}
+- Top violations:\n${violationSummary || 'None yet'}
+
+CONTEXT:
+- The Essential Commodities Act, 1955 governs price regulation in India
+- Consumer helpline: 1800-11-4000
+- District Collector can take action under EC Act
+- Black marketing is punishable with up to 7 years imprisonment
+
+Respond in ${lang}. Be concise (3-5 short paragraphs). Use **bold** for key terms. Focus on being helpful and actionable for citizens.`;
+}
+
+async function askAI() {
+  const apiKey = getGeminiKey();
+  if (!apiKey) {
+    showToast('🔑', t('ai_no_key'), '');
+    promptGeminiKey();
+    return;
+  }
+
+  const questionSelect = document.getElementById('ai-question');
+  const questionText = questionSelect.options[questionSelect.selectedIndex].textContent;
+  const responseDiv = document.getElementById('ai-response');
+  const askBtn = document.getElementById('ai-ask-btn');
+
+  // Show loading
+  responseDiv.className = 'ai-response loading';
+  responseDiv.innerHTML = `<div class="ai-spinner"></div><span>${t('ai_loading')}</span>`;
+  askBtn.disabled = true;
+
+  const systemContext = buildAIContext();
+  const userMessage = questionText;
+
+  try {
+    const resp = await fetch(`${GEMINI_API_BASE}?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: systemContext + '\n\nUser question: ' + userMessage }
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 800,
+          topP: 0.9
+        }
+      })
+    });
+
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `API error ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    if (!text) throw new Error('Empty response');
+
+    // Convert markdown-like formatting to HTML
+    const html = text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n- /g, '\n<li>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>')
+      .replace(/<p><li>/g, '<ul><li>')
+      .replace(/<\/li>\n?<\/p>/g, '</li></ul>');
+
+    responseDiv.className = 'ai-response';
+    responseDiv.innerHTML = `<div class="ai-text">${html}</div>`;
+
+  } catch (err) {
+    console.error('[SupplySentinel AI]', err);
+    responseDiv.className = 'ai-response';
+    responseDiv.innerHTML = `<div class="ai-empty" style="color:var(--red);">${t('ai_error')}<br><small style="color:var(--text3);">${err.message}</small></div>`;
+  } finally {
+    askBtn.disabled = false;
   }
 }
 
