@@ -1625,6 +1625,18 @@
     .btn-submit:hover::before { opacity: 0; }
   }
 </style>
+<!-- EmailJS SDK (loaded conditionally) -->
+<script>
+  // Defer EmailJS loading — only load if configured
+  window.addEventListener('load', function() {
+    if (typeof EMAILJS_PUBLIC_KEY !== 'undefined' && EMAILJS_PUBLIC_KEY) {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+      s.onload = function() { emailjs.init(EMAILJS_PUBLIC_KEY); console.log('[EmailJS] Initialized'); };
+      document.head.appendChild(s);
+    }
+  });
+</script>
 </head>
 <body>
 
@@ -1871,6 +1883,9 @@
       <button class="btn-report btn-report-primary" onclick="openReportModal('collector')">
         <span data-i18n="btn_dc_report">📋 Generate DC Report</span>
       </button>
+      <button class="btn-report" onclick="openReportModal('email')" style="background:rgba(66,133,244,0.12);border-color:rgba(66,133,244,0.3);color:#64b5f6;">
+        <span data-i18n="btn_email_dc">📧 Email to Collector</span>
+      </button>
     </div>
   </div>
 
@@ -1918,8 +1933,9 @@
     <div class="modal-sub" id="modal-sub">Review and send to authorities</div>
     <div class="report-preview" id="modal-content"></div>
     <div class="modal-actions">
-      <button class="btn-secondary" onclick="closeModalDirect()">Close</button>
+      <button class="btn-secondary" onclick="closeModalDirect()" data-i18n="btn_close">Close</button>
       <button class="btn-submit" id="modal-whatsapp-btn" style="display:none; background:#25D366;">Open WhatsApp</button>
+      <button class="btn-submit" id="modal-email-btn" style="display:none; background:#4285f4;" data-i18n="btn_send_email">📧 Send Email</button>
       <button class="btn-submit" id="modal-action-btn">Copy Report</button>
     </div>
   </div>
@@ -1938,6 +1954,12 @@ const CONFIG_PATH = 'config/balangir.json';
 // Google Sheets Backend URL (set this after deploying Code.gs)
 // Leave empty to use localStorage only
 const SHEETS_API_URL = '';  // e.g. 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec'
+
+// EmailJS Configuration (set after creating EmailJS account — free tier: 200 emails/month)
+// Leave empty to disable email complaint feature
+const EMAILJS_PUBLIC_KEY = '';  // e.g. 'abc123XYZ'
+const EMAILJS_SERVICE_ID = '';  // e.g. 'service_xxx'
+const EMAILJS_TEMPLATE_ID = ''; // e.g. 'template_xxx'
 
 // Data source tracking
 let dataSource = 'local'; // 'local' or 'live'
@@ -2075,6 +2097,22 @@ const i18n = {
     pwa_install_desc: 'Add to home screen for offline access & faster loading',
     pwa_install: 'Install',
     pwa_offline: 'You are offline. Showing cached data.',
+    // Email complaint
+    btn_email_dc: '📧 Email to Collector',
+    btn_send_email: '📧 Send Email',
+    btn_close: 'Close',
+    email_title: 'Email Complaint to District Collector',
+    email_sub: 'Review the complaint, then click Send Email',
+    email_sending: 'Sending email...',
+    email_sent: 'Email Sent!',
+    email_sent_desc: 'Complaint emailed to the District Collector successfully.',
+    email_fail: 'Email Failed',
+    email_fail_desc: 'Could not send email. Please copy the letter and email manually.',
+    email_no_config: 'Email not configured',
+    email_no_config_desc: 'EmailJS is not set up. Copy the letter and email it manually to: ',
+    email_your_name: 'Your Name (optional)',
+    email_your_email: 'Your Email (optional, for reply)',
+    email_subject: 'Illegal Overpricing & Hoarding of Essential Commodities',
   },
   or: {
     // Header
@@ -2202,6 +2240,22 @@ const i18n = {
     pwa_install_desc: 'ଅଫଲାଇନ ଆକ୍ସେସ ଏବଂ ଦ୍ରୁତ ଲୋଡିଂ ପାଇଁ ହୋମ ସ୍କ୍ରିନରେ ଯୋଡ଼ନ୍ତୁ',
     pwa_install: 'ଇନଷ୍ଟଲ',
     pwa_offline: 'ଆପଣ ଅଫଲାଇନ ଅଛନ୍ତି। କ୍ୟାସ ହୋଇଥିବା ଡାଟା ଦେଖାଯାଉଛି।',
+    // Email complaint
+    btn_email_dc: '📧 ଜିଲ୍ଲା ପାଳଙ୍କୁ ଇମେଲ',
+    btn_send_email: '📧 ଇମେଲ ପଠାନ୍ତୁ',
+    btn_close: 'ବନ୍ଦ କରନ୍ତୁ',
+    email_title: 'ଜିଲ୍ଲା ପାଳଙ୍କୁ ଇମେଲ ଅଭିଯୋଗ',
+    email_sub: 'ଅଭିଯୋଗ ସମୀକ୍ଷା କରନ୍ତୁ, ତାପରେ ଇମେଲ ପଠାନ୍ତୁ କ୍ଲିକ କରନ୍ତୁ',
+    email_sending: 'ଇମେଲ ପଠାଉଛି...',
+    email_sent: 'ଇମେଲ ପଠାଗଲା!',
+    email_sent_desc: 'ଜିଲ୍ଲା ପାଳଙ୍କୁ ଅଭିଯୋଗ ସଫଳ ଭାବେ ଇମେଲ କରାଗଲା।',
+    email_fail: 'ଇମେଲ ବିଫଳ',
+    email_fail_desc: 'ଇମେଲ ପଠାଯାଇପାରିଲା ନାହିଁ। ଦୟାକରି ପତ୍ର କପି କରି ମାନୁଆଲି ଇମେଲ କରନ୍ତୁ।',
+    email_no_config: 'ଇମେଲ ସଂରଚିତ ହୋଇନାହିଁ',
+    email_no_config_desc: 'EmailJS ସେଟଅପ ହୋଇନାହିଁ। ପତ୍ର କପି କରି ମାନୁଆଲି ଇମେଲ କରନ୍ତୁ: ',
+    email_your_name: 'ଆପଣଙ୍କ ନାମ (ଐଚ୍ଛିକ)',
+    email_your_email: 'ଆପଣଙ୍କ ଇମେଲ (ଐଚ୍ଛିକ, ଉତ୍ତର ପାଇଁ)',
+    email_subject: 'ଅତ୍ୟାବଶ୍ୟକ ସାମଗ୍ରୀର ଅବୈଧ ଅଧିକ ମୂଲ୍ୟ ଏବଂ ମଜୁତ',
   }
 };
 
@@ -3027,8 +3081,9 @@ function openReportModal(type) {
   const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
   const severeReports = allReports.filter(r => r.severity === 'severe' || r.severity === 'extreme');
 
-  // Hide WhatsApp button by default
+  // Hide extra buttons by default
   document.getElementById('modal-whatsapp-btn').style.display = 'none';
+  document.getElementById('modal-email-btn').style.display = 'none';
 
   if (type === 'collector') {
     title.textContent = 'Official Complaint — District Collector';
@@ -3122,6 +3177,50 @@ Official: ₹${topReport.official} → Black Market: ₹${topReport.reported} (+
       const encoded = encodeURIComponent(whatsappText);
       window.open('https://wa.me/?text=' + encoded, '_blank');
     };
+
+  } else if (type === 'email') {
+    title.textContent = t('email_title');
+    sub.textContent = t('email_sub');
+    actionBtn.textContent = '📋 ' + (currentLang === 'or' ? 'ପତ୍ର କପି' : 'Copy Letter');
+
+    const collectorName = DISTRICT_CONFIG ? DISTRICT_CONFIG.officialContacts.districtCollector.name : 'District Collector, Balangir';
+    const collectorEmail = DISTRICT_CONFIG ? DISTRICT_CONFIG.officialContacts.districtCollector.email : 'balangir-collector@nic.in';
+    const civilName = DISTRICT_CONFIG ? DISTRICT_CONFIG.officialContacts.civilSupplies.name : 'Civil Supplies Officer';
+    const distName = DISTRICT_CONFIG ? DISTRICT_CONFIG.district : 'Balangir';
+    const stateName = DISTRICT_CONFIG ? DISTRICT_CONFIG.state : 'Odisha';
+    const siteUrl = DISTRICT_CONFIG ? DISTRICT_CONFIG.liveUrl : 'https://supplysentinel.netlify.app';
+
+    // Build complaint text
+    const complaintText = buildComplaintText(today, severeReports, collectorName, civilName, distName, stateName, siteUrl);
+
+    content.innerHTML = `
+<span class="rp-header">${t('email_title').toUpperCase()}</span>
+<div class="rp-row"><span class="rp-label">To:</span><span class="rp-val">${collectorName} &lt;${collectorEmail}&gt;</span></div>
+<div class="rp-row"><span class="rp-label">CC:</span><span class="rp-val">${civilName}</span></div>
+<div class="rp-row"><span class="rp-label">${t('email_subject')}:</span><span class="rp-val">${t('email_subject')}</span></div>
+<div class="rp-row" style="margin-top:10px;">
+  <span class="rp-label">${t('email_your_name')}:</span>
+  <input type="text" id="email-sender-name" placeholder="${t('email_your_name')}" style="flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:6px 10px;color:var(--text);font-size:12px;font-family:var(--sans);">
+</div>
+<div class="rp-row" style="margin-top:6px;">
+  <span class="rp-label">${t('email_your_email')}:</span>
+  <input type="email" id="email-sender-email" placeholder="${t('email_your_email')}" style="flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:6px 10px;color:var(--text);font-size:12px;font-family:var(--sans);">
+</div>
+<br>
+<div style="color:var(--text2);line-height:1.9;font-size:11px;white-space:pre-wrap;">${complaintText}</div>`;
+
+    // Copy button
+    actionBtn.onclick = () => {
+      navigator.clipboard.writeText(complaintText).then(() => {
+        showToast('📋', 'Copied!', 'Paste in your email client.');
+      });
+    };
+
+    // Show email send button
+    const emailBtn = document.getElementById('modal-email-btn');
+    emailBtn.style.display = 'inline-block';
+    emailBtn.textContent = t('btn_send_email');
+    emailBtn.onclick = () => sendComplaintEmail(complaintText, collectorEmail, collectorName, distName);
   }
 
   overlay.classList.add('open');
@@ -3133,6 +3232,110 @@ function closeModal(e) {
 
 function closeModalDirect() {
   document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ============================================================
+// EMAIL COMPLAINT (EmailJS)
+// ============================================================
+
+function buildComplaintText(today, severeReports, collectorName, civilName, distName, stateName, siteUrl) {
+  const repoUrl = DISTRICT_CONFIG ? DISTRICT_CONFIG.repoUrl : 'https://github.com/Ab-aswini/Supplysentinel';
+  const dateRange = allReports.length > 0
+    ? new Date(Math.min(...allReports.map(r => r.time))).toLocaleDateString('en-IN') + ' to ' + today
+    : today;
+
+  let text = `FORMAL COMPLAINT — MARKET PRICE VIOLATIONS
+
+To: ${collectorName}, ${stateName}
+CC: ${civilName}
+Subject: ${t('email_subject')}
+Date: ${today}
+Platform: SupplySentinel — Citizen Price Watch, ${distName}
+Total Reports: ${allReports.length} (${severeReports.length} severe/extreme violations)
+
+Sir/Madam,
+
+This is a formal complaint compiled by SupplySentinel, a citizen-driven price monitoring initiative for ${distName} district. The following verified violations of Maximum Retail Price (MRP) on essential commodities have been reported by residents between ${dateRange}.
+
+VIOLATION SUMMARY:
+`;
+
+  severeReports.forEach((r, i) => {
+    const pct = r.official > 0 ? Math.round(((r.reported - r.official) / r.official) * 100) : 0;
+    text += `\n${i + 1}. ${r.commodity}
+   Shop: ${r.shop}, ${r.area}
+   Official Price: ₹${r.official} | Reported Price: ₹${r.reported}
+   Premium: +${pct}% above MRP
+   Severity: ${r.severity.toUpperCase()}
+   ${r.notes ? 'Notes: "' + r.notes + '"' : ''}
+   Community Confirmations: ${r.upvotes} upvote(s)\n`;
+  });
+
+  text += `
+We respectfully request an immediate inspection of the above establishments under the Essential Commodities Act, 1955 and relevant provisions of the Consumer Protection Act, 2019.
+
+Submitted on behalf of ${distName} citizens via SupplySentinel.
+${siteUrl}
+Source: ${repoUrl}`;
+
+  return text;
+}
+
+async function sendComplaintEmail(complaintText, collectorEmail, collectorName, distName) {
+  // If EmailJS is not configured, fall back to mailto:
+  if (!EMAILJS_PUBLIC_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID) {
+    // Try mailto: as fallback
+    const senderName = document.getElementById('email-sender-name')?.value || 'Concerned Citizen';
+    const subject = encodeURIComponent(t('email_subject') + ' — ' + distName);
+    const body = encodeURIComponent(complaintText);
+    const mailtoUrl = `mailto:${collectorEmail}?subject=${subject}&body=${body}`;
+
+    // Try to open mailto
+    window.open(mailtoUrl, '_self');
+    showToast('📧', t('email_no_config'), t('email_no_config_desc') + collectorEmail);
+    return;
+  }
+
+  const emailBtn = document.getElementById('modal-email-btn');
+  const senderName = document.getElementById('email-sender-name')?.value || 'Concerned Citizen';
+  const senderEmail = document.getElementById('email-sender-email')?.value || 'anonymous@supplysentinel.app';
+
+  // Show sending state
+  emailBtn.disabled = true;
+  emailBtn.textContent = t('email_sending');
+
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: collectorEmail,
+      to_name: collectorName,
+      from_name: senderName,
+      from_email: senderEmail,
+      subject: t('email_subject') + ' — ' + distName + ' District',
+      message: complaintText,
+      district: distName,
+      report_count: allReports.length,
+      site_url: DISTRICT_CONFIG ? DISTRICT_CONFIG.liveUrl : 'https://supplysentinel.netlify.app'
+    });
+
+    // Success
+    const sent = parseInt(localStorage.getItem('ss_complaints_sent') || '0') + 1;
+    localStorage.setItem('ss_complaints_sent', String(sent));
+    renderScoreCards();
+    showToast('📧', t('email_sent'), t('email_sent_desc'));
+    closeModalDirect();
+
+  } catch (err) {
+    console.error('[EmailJS]', err);
+    showToast('❌', t('email_fail'), t('email_fail_desc'));
+
+    // Fallback to mailto:
+    const subject = encodeURIComponent(t('email_subject') + ' — ' + distName);
+    const body = encodeURIComponent(complaintText);
+    window.open(`mailto:${collectorEmail}?subject=${subject}&body=${body}`, '_self');
+  } finally {
+    emailBtn.disabled = false;
+    emailBtn.textContent = t('btn_send_email');
+  }
 }
 
 // ============================================================

@@ -105,8 +105,58 @@ The frontend tries Sheets first, falls back to localStorage if the API is unavai
 - **No data showing**: Check the Execution log in Apps Script for errors
 - **Want to update the script?**: Go to Deploy → Manage deployments → Edit → select "New version" → Deploy
 
-## EmailJS Setup (Coming in v1.0)
-Instructions for direct complaint email functionality will be added here.
+## EmailJS Setup (Optional — Direct Email Complaints)
+
+Enable citizens to email formal complaints directly to the District Collector with one click.
+
+### Step 1: Create EmailJS Account
+1. Go to [emailjs.com](https://www.emailjs.com/) and sign up (free tier = 200 emails/month)
+2. In the dashboard, go to **Email Services** → **Add New Service**
+3. Connect your Gmail/Outlook account (this will be the "from" address)
+4. Note your **Service ID** (e.g. `service_abc123`)
+
+### Step 2: Create Email Template
+1. Go to **Email Templates** → **Create New Template**
+2. Set the template fields:
+   - **To email**: `{{to_email}}`
+   - **From name**: `{{from_name}}`
+   - **Reply to**: `{{from_email}}`
+   - **Subject**: `{{subject}}`
+   - **Body**:
+     ```
+     {{message}}
+
+     ---
+     Sent via SupplySentinel ({{site_url}})
+     District: {{district}} | Reports: {{report_count}}
+     ```
+3. Click **Save** and note your **Template ID** (e.g. `template_xyz789`)
+
+### Step 3: Get Public Key
+1. Go to **Account** → **General** tab
+2. Copy your **Public Key** (e.g. `abc123XYZ`)
+
+### Step 4: Configure in index.html
+1. Find these lines in `index.html`:
+   ```javascript
+   const EMAILJS_PUBLIC_KEY = '';
+   const EMAILJS_SERVICE_ID = '';
+   const EMAILJS_TEMPLATE_ID = '';
+   ```
+2. Fill them in:
+   ```javascript
+   const EMAILJS_PUBLIC_KEY = 'abc123XYZ';
+   const EMAILJS_SERVICE_ID = 'service_abc123';
+   const EMAILJS_TEMPLATE_ID = 'template_xyz789';
+   ```
+3. Commit and push. The "📧 Email to Collector" button is now active!
+
+### How It Works
+- User clicks "📧 Email to Collector" in the complaint section
+- Reviews the auto-generated formal complaint letter
+- Optionally enters their name and email (for reply)
+- Clicks "📧 Send Email" — complaint sent via EmailJS
+- **Fallback**: If EmailJS is not configured, opens the default email client with `mailto:`
 
 ## Need Help?
 - Open an issue on the main repo
