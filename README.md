@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://ab-aswini.github.io/Supplysentinel">
+  <a href="https://supplysentinel.netlify.app">
     <img src="https://img.shields.io/badge/🔴%20LIVE%20DEMO-Balangir%20Edition-ff4d1c?style=for-the-badge&logo=github&logoColor=white&labelColor=0a0c0f" alt="Live Demo — Balangir">
   </a>
 </p>
@@ -83,7 +83,7 @@ When this crisis hit Balangir, there was **no way** for citizens to:
 - Generate evidence strong enough for authorities to act
 - Alert their community in real time
 
-**So we built SupplySentinel.** The Balangir edition is live at [ab-aswini.github.io/Supplysentinel](https://ab-aswini.github.io/Supplysentinel) — designed so that **any district in India** can deploy their own version in under 10 minutes.
+**So we built SupplySentinel.** The Balangir edition is live at [supplysentinel.netlify.app](https://supplysentinel.netlify.app) — designed so that **any district in India** can deploy their own version in under 10 minutes.
 
 > *"When a daily-wage worker pays ₹2,500 for a ₹939 LPG cylinder, that's not just inflation — that's exploitation. SupplySentinel gives citizens a weapon: DATA."*
 > — **Aswini Behera**, Creator, Balangir, Odisha
@@ -465,7 +465,7 @@ See [docs/DEPLOY.md](docs/DEPLOY.md) for step-by-step instructions.
 
 | District | State | Maintainer | Status | Link |
 |----------|-------|------------|--------|------|
-| Balangir | Odisha | [@Ab-aswini](https://github.com/Ab-aswini) | 🔴 LIVE | [Visit](https://ab-aswini.github.io/Supplysentinel) |
+| Balangir | Odisha | [@Ab-aswini](https://github.com/Ab-aswini) | 🔴 LIVE | [Visit](https://supplysentinel.netlify.app) |
 
 > **Deployed for your district?** Add a row and submit a PR. Let's build a national network.
 
@@ -511,7 +511,7 @@ flowchart TB
 
 | Dashboard & Market Health | Report Form & Live Feed | Hotspot Grid & Complaint |
 |---------------------------|-------------------------|--------------------------|
-| [Live Demo](https://ab-aswini.github.io/Supplysentinel) | [Live Demo](https://ab-aswini.github.io/Supplysentinel) | [Live Demo](https://ab-aswini.github.io/Supplysentinel) |
+| [Live Demo](https://supplysentinel.netlify.app) | [Live Demo](https://supplysentinel.netlify.app) | [Live Demo](https://supplysentinel.netlify.app) |
 
 ---
 
@@ -560,7 +560,7 @@ This is a citizen utility, not a tech showcase. We need:
 | **Email** | aswinibehera666@gmail.com |
 | **Location** | Balangir, Odisha, India |
 | **Repo** | [github.com/Ab-aswini/Supplysentinel](https://github.com/Ab-aswini/Supplysentinel) |
-| **Live Demo** | [ab-aswini.github.io/Supplysentinel](https://ab-aswini.github.io/Supplysentinel) |
+| **Live Demo** | [supplysentinel.netlify.app](https://supplysentinel.netlify.app) |
 
 ---
 

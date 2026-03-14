@@ -31,13 +31,20 @@ Get SupplySentinel running for your district in under 10 minutes. Zero cost. No 
 4. Choose **main** branch, **/ (root)** folder
 5. Click **Save**
 
-### Step 4: Access Your Site
-- Your site will be live at: `https://YOUR-USERNAME.github.io/Supplysentinel`
-- It takes 1-2 minutes for the first deploy
+### Step 4: Deploy on Netlify (Recommended)
+1. Go to [netlify.com](https://www.netlify.com/) and sign up with GitHub
+2. Click **"Add new site"** → **"Import an existing project"**
+3. Select your forked repository
+4. Deploy settings: Branch = `main`, Build = leave blank, Publish directory = `/`
+5. Click **Deploy site**
+6. Your site is live! Optionally set a custom subdomain under Site settings > Domain management
 
-### Step 5 (Optional): Custom Domain
-1. In Settings > Pages, add your custom domain
-2. Add a CNAME record pointing to `YOUR-USERNAME.github.io`
+> The main instance is live at: [supplysentinel.netlify.app](https://supplysentinel.netlify.app)
+
+### Step 5 (Alternative): GitHub Pages
+1. Go to your fork's **Settings** tab → **Pages**
+2. Source: **Deploy from a branch** → **main** → **/ (root)** → **Save**
+3. Live at: `https://YOUR-USERNAME.github.io/Supplysentinel`
 
 ## Google Sheets Backend Setup (Coming in v1.0)
 Instructions for setting up the Google Sheets real-time database will be added here.
