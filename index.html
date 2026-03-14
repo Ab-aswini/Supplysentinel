@@ -25,6 +25,16 @@
 <meta name="twitter:title" content="SupplySentinel — Fighting Black Markets with Citizen Data">
 <meta name="twitter:description" content="LPG at ₹2,500 instead of ₹939? Report it. Track it. Fight it. Free & open source for every Indian district.">
 <meta name="twitter:image" content="https://supplysentinel.netlify.app/social-card.png">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SupplySentinel">
+<meta name="mobile-web-app-capable" content="yes">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -1395,13 +1405,224 @@
     display: inline-block;
   }
 
-  /* Responsive */
+  /* ============================================ */
+  /* RESPONSIVE — TABLET (≤768px)                */
+  /* ============================================ */
+  @media (max-width: 768px) {
+    .scores-row {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .score-card { padding: 16px; }
+    .score-value { font-size: 28px; }
+    .report-generator {
+      flex-direction: column;
+      text-align: center;
+    }
+    .rg-actions {
+      width: 100%;
+      justify-content: center;
+    }
+    .ai-prompt-row {
+      flex-direction: column;
+    }
+    .footer {
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+  }
+
+  /* ============================================ */
+  /* RESPONSIVE — MOBILE (≤480px)                */
+  /* ============================================ */
   @media (max-width: 480px) {
-    .header { padding: 0 12px; gap: 8px; }
+    .header {
+      padding: 0 12px;
+      gap: 6px;
+      height: 52px;
+    }
+    .logo-icon { width: 26px; height: 26px; font-size: 11px; }
+    .logo-text { font-size: 14px; }
     .location-tag { display: none; }
     .data-source-badge { display: none; }
-    .main { padding: 20px 16px; }
-    .lang-toggle .lang-opt { padding: 4px 8px; font-size: 10px; }
+    .crisis-badge { font-size: 10px; padding: 3px 8px; }
+    .lang-toggle .lang-opt { padding: 3px 7px; font-size: 9px; }
+
+    .main { padding: 16px 12px; }
+
+    .alert-banner {
+      font-size: 12px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+
+    .section-label { font-size: 10px; margin-bottom: 10px; }
+
+    .scores-row {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .score-card {
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .score-label { font-size: 10px; }
+    .score-value { font-size: 24px; }
+    .score-value span { font-size: 14px !important; }
+    .score-sub { font-size: 10px; }
+
+    .report-form { margin-bottom: 20px; }
+    .form-header { padding: 14px; }
+    .form-header-icon { font-size: 20px; }
+    .form-header h3 { font-size: 15px; }
+    .form-header p { font-size: 11px; }
+    .form-body { padding: 14px; }
+
+    .submit-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .btn-secondary {
+      width: 100%;
+      text-align: center;
+    }
+    .submit-note {
+      text-align: center;
+      font-size: 10px;
+    }
+
+    .panel-header { padding: 12px 14px; }
+    .panel-title { font-size: 13px; }
+    .panel-badge { font-size: 9px; padding: 3px 8px; }
+
+    .tabs { padding: 0 10px; gap: 0; }
+    .tab { padding: 8px 10px; font-size: 11px; }
+
+    #report-feed { padding: 0 12px !important; }
+    .report-item { padding: 12px 0; }
+    .report-avatar { width: 32px; height: 32px; font-size: 14px; }
+    .report-meta { font-size: 12px; }
+    .report-detail { font-size: 13px; }
+    .tag { font-size: 9px; padding: 2px 6px; }
+
+    .commodity-table th,
+    .commodity-table td {
+      padding: 8px 6px;
+      font-size: 11px;
+    }
+    .comm-icon { width: 22px; height: 22px; font-size: 11px; }
+    .comm-name { font-size: 11px; }
+
+    .hotspot-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .hotspot-card { padding: 10px; }
+    .hotspot-area { font-size: 11px; }
+    .hotspot-count { font-size: 10px; }
+
+    .ai-explainer-header { padding: 12px 14px; }
+    .ai-label { font-size: 13px; }
+    .ai-btn { padding: 10px 14px; font-size: 12px; }
+    .ai-response { padding: 14px; }
+
+    .report-generator { padding: 16px; }
+    .rg-info h3 { font-size: 15px; }
+    .rg-info p { font-size: 12px; }
+    .btn-report { font-size: 12px; padding: 10px 14px; }
+
+    .photo-upload-area { padding: 12px; }
+    .photo-thumb { width: 60px; height: 60px; }
+    .report-photos .feed-photo { width: 48px; height: 48px; }
+
+    .footer { padding: 16px 12px; }
+    .footer-left { font-size: 11px; }
+  }
+
+  /* ============================================ */
+  /* RESPONSIVE — SMALL MOBILE (≤360px)          */
+  /* ============================================ */
+  @media (max-width: 360px) {
+    .scores-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .score-card { padding: 10px; }
+    .score-value { font-size: 20px; }
+    .crisis-badge { display: none; }
+    .hotspot-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ============================================ */
+  /* PWA INSTALL PROMPT                          */
+  /* ============================================ */
+  .pwa-install-banner {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+    animation: slideUp 0.3s ease;
+  }
+  .pwa-install-banner.show { display: flex; }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .pwa-install-banner .pwa-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .pwa-install-banner .pwa-text small {
+    display: block;
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .pwa-install-btn {
+    padding: 8px 18px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .pwa-dismiss {
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  /* Touch improvements */
+  @media (hover: none) and (pointer: coarse) {
+    .btn-submit, .btn-secondary, .btn-report, .ai-btn, .tab,
+    .hotspot-card, .upvote-btn, .pwa-install-btn {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .score-card:hover { transform: none; }
+    .btn-submit:hover::before { opacity: 0; }
   }
 </style>
 </head>
@@ -1666,6 +1887,16 @@
   </a>
 </footer>
 
+<!-- PWA INSTALL BANNER -->
+<div class="pwa-install-banner" id="pwa-install-banner">
+  <div class="pwa-text">
+    <strong data-i18n="pwa_install_title">Install SupplySentinel</strong>
+    <small data-i18n="pwa_install_desc">Add to home screen for offline access & faster loading</small>
+  </div>
+  <button class="pwa-install-btn" id="pwa-install-btn" onclick="installPWA()" data-i18n="pwa_install">Install</button>
+  <button class="pwa-dismiss" onclick="dismissPWA()">✕</button>
+</div>
+
 <!-- PHOTO LIGHTBOX -->
 <div class="photo-lightbox" id="photo-lightbox" onclick="closeLightbox()">
   <img id="lightbox-img" src="" alt="Evidence photo">
@@ -1839,6 +2070,11 @@ const i18n = {
     photo_max: 'Maximum 3 photos allowed',
     photo_added: 'Photo added',
     photo_evidence: 'photo evidence',
+    // PWA
+    pwa_install_title: 'Install SupplySentinel',
+    pwa_install_desc: 'Add to home screen for offline access & faster loading',
+    pwa_install: 'Install',
+    pwa_offline: 'You are offline. Showing cached data.',
   },
   or: {
     // Header
@@ -1961,6 +2197,11 @@ const i18n = {
     photo_max: 'ସର୍ବାଧିକ ୩ ଫଟୋ ଅନୁମୋଦିତ',
     photo_added: 'ଫଟୋ ଯୋଡ଼ାଗଲା',
     photo_evidence: 'ଫଟୋ ପ୍ରମାଣ',
+    // PWA
+    pwa_install_title: 'SupplySentinel ଇନଷ୍ଟଲ କରନ୍ତୁ',
+    pwa_install_desc: 'ଅଫଲାଇନ ଆକ୍ସେସ ଏବଂ ଦ୍ରୁତ ଲୋଡିଂ ପାଇଁ ହୋମ ସ୍କ୍ରିନରେ ଯୋଡ଼ନ୍ତୁ',
+    pwa_install: 'ଇନଷ୍ଟଲ',
+    pwa_offline: 'ଆପଣ ଅଫଲାଇନ ଅଛନ୍ତି। କ୍ୟାସ ହୋଇଥିବା ଡାଟା ଦେଖାଯାଉଛି।',
   }
 };
 
@@ -3072,6 +3313,62 @@ async function askAI() {
     askBtn.disabled = false;
   }
 }
+
+// ============================================================
+// ============================================================
+// PWA — Service Worker + Install Prompt
+// ============================================================
+
+let deferredInstallPrompt = null;
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('[PWA] Service worker registered:', reg.scope))
+      .catch(err => console.warn('[PWA] SW registration failed:', err));
+  });
+}
+
+// Capture install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  // Show install banner after 5 seconds if not dismissed before
+  const dismissed = localStorage.getItem('ss_pwa_dismissed');
+  if (!dismissed) {
+    setTimeout(() => {
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.add('show');
+    }, 5000);
+  }
+});
+
+function installPWA() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(choice => {
+    if (choice.outcome === 'accepted') {
+      showToast('📱', 'Installed!', 'SupplySentinel added to your home screen.');
+    }
+    deferredInstallPrompt = null;
+    document.getElementById('pwa-install-banner').classList.remove('show');
+  });
+}
+
+function dismissPWA() {
+  document.getElementById('pwa-install-banner').classList.remove('show');
+  localStorage.setItem('ss_pwa_dismissed', '1');
+}
+
+// Offline detection
+window.addEventListener('online', () => {
+  showToast('🌐', 'Back Online', 'Connected to the internet.');
+});
+
+window.addEventListener('offline', () => {
+  showToast('📴', t('pwa_offline'), '');
+});
 
 // ============================================================
 // INIT — Load config, then render everything
