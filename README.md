@@ -521,7 +521,7 @@ This is a citizen utility, not a tech showcase. We need:
 
 | Role | How You Can Help |
 |------|-----------------|
-| **Developers** | Vanilla HTML/CSS/JS only. See [CONTRIBUTING.md](docs/CONTRIBUTING.md) |
+| **Developers** | Vanilla HTML/CSS/JS only. See [CONTRIBUTING.md](docs/CONTRIBUTING.md) and the full [PRD](docs/PRD.md) |
 | **Translators** | Hindi, Odia, Telugu, Tamil, Bengali, Marathi, Kannada... |
 | **Citizens** | Deploy for your district. Report prices. Spread awareness |
 | **Data Verifiers** | Keep official MRP data current from govt sources |
