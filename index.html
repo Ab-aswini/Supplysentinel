@@ -159,6 +159,39 @@
     50% { opacity: 0.4; }
   }
 
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+  }
+  .lang-toggle .lang-opt {
+    padding: 4px 10px;
+    color: var(--text3);
+    transition: all 0.25s ease;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.2;
+  }
+  .lang-toggle .lang-opt.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+  }
+  .lang-toggle .lang-opt:hover:not(.active) {
+    color: var(--text);
+    background: var(--surface2);
+  }
+
   .crisis-badge {
     display: flex;
     align-items: center;
@@ -1104,9 +1137,11 @@
 
   /* Responsive */
   @media (max-width: 480px) {
-    .header { padding: 0 16px; }
+    .header { padding: 0 12px; gap: 8px; }
     .location-tag { display: none; }
+    .data-source-badge { display: none; }
     .main { padding: 20px 16px; }
+    .lang-toggle .lang-opt { padding: 4px 8px; font-size: 10px; }
   }
 </style>
 </head>
@@ -1119,13 +1154,17 @@
     <div class="logo-text">Supply<span>Sentinel</span></div>
   </div>
   <div class="header-right">
+    <div class="lang-toggle" id="lang-toggle">
+      <button class="lang-opt active" data-lang="en" onclick="switchLang('en')">EN</button>
+      <button class="lang-opt" data-lang="or" onclick="switchLang('or')">ଓଡ଼ିଆ</button>
+    </div>
     <div class="data-source-badge" id="data-source-badge">
       <div class="ds-dot"></div>
       <span>Local Data</span>
     </div>
     <div class="crisis-badge">
       <div class="crisis-dot"></div>
-      LPG Crisis Active
+      <span data-i18n="crisis_badge">LPG Crisis Active</span>
     </div>
     <div class="location-tag">BALANGIR, ODISHA</div>
   </div>
@@ -1140,7 +1179,7 @@
   </div>
 
   <!-- SCORE CARDS -->
-  <div class="section-label">Market Health Dashboard</div>
+  <div class="section-label" data-i18n="section_dashboard">Market Health Dashboard</div>
   <div class="scores-row" id="scores-row">
     <!-- Dynamically rendered by renderScoreCards() -->
   </div>
@@ -1150,14 +1189,14 @@
     <div class="form-header">
       <div class="form-header-icon">📍</div>
       <div class="form-header-text">
-        <h3>Report a Price Violation</h3>
-        <p>Seen overpricing? Report it in 30 seconds. Your report is anonymous and creates a paper trail.</p>
+        <h3 data-i18n="form_title">Report a Price Violation</h3>
+        <p data-i18n="form_desc">Seen overpricing? Report it in 30 seconds. Your report is anonymous and creates a paper trail.</p>
       </div>
     </div>
     <div class="form-body">
       <div class="form-row">
         <div class="form-group">
-          <label>Commodity</label>
+          <label data-i18n="lbl_commodity">Commodity</label>
           <select id="f-commodity" onchange="updateOfficialPrice()">
             <option value="">Select commodity...</option>
             <option value="LPG Cylinder (14.2kg)">LPG Cylinder (14.2kg)</option>
@@ -1173,29 +1212,29 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Shop / Area Name</label>
+          <label data-i18n="lbl_shop">Shop / Area Name</label>
           <input type="text" id="f-shop" placeholder="e.g. Sanjay Kirana, Cantonment Rd">
         </div>
       </div>
 
       <div class="price-row">
         <div class="form-group">
-          <label>Official MRP (₹)</label>
+          <label data-i18n="lbl_official_mrp">Official MRP (₹)</label>
           <input type="number" id="f-official" placeholder="Auto-filled" readonly style="opacity:0.7; cursor:not-allowed;">
         </div>
         <div class="form-group">
-          <label>Price You Saw (₹)</label>
+          <label data-i18n="lbl_price_saw">Price You Saw (₹)</label>
           <input type="number" id="f-reported" placeholder="e.g. 2500" oninput="calcDiff()">
         </div>
         <div class="form-group">
-          <label>Difference</label>
+          <label data-i18n="lbl_difference">Difference</label>
           <div class="price-diff-display" id="f-diff" style="color: var(--text3);">—</div>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>Area in Balangir</label>
+          <label data-i18n="lbl_area">Area in Balangir</label>
           <select id="f-area">
             <option value="">Select area...</option>
             <option>Cantonment Road</option>
@@ -1211,7 +1250,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Severity</label>
+          <label data-i18n="lbl_severity">Severity</label>
           <select id="f-severity">
             <option value="moderate">Moderate (10–50% above MRP)</option>
             <option value="severe">Severe (50–100% above MRP)</option>
@@ -1223,15 +1262,15 @@
 
       <div class="form-row">
         <div class="form-group full">
-          <label>Additional Details (Optional)</label>
+          <label data-i18n="lbl_notes">Additional Details (Optional)</label>
           <textarea id="f-notes" placeholder="Any extra context — e.g. 'shop owner said only selling to known customers', 'said stock will arrive in 3 days'..."></textarea>
         </div>
       </div>
 
       <div class="submit-row">
-        <button class="btn-submit" onclick="submitReport()">⚑ Submit Report</button>
-        <button class="btn-secondary" onclick="clearForm()">Clear</button>
-        <span class="submit-note">Anonymous · No login required · <span style="color:var(--text3);">🔒 Data stored locally on your device</span></span>
+        <button class="btn-submit" onclick="submitReport()" data-i18n="btn_submit">⚑ Submit Report</button>
+        <button class="btn-secondary" onclick="clearForm()" data-i18n="btn_clear">Clear</button>
+        <span class="submit-note" data-i18n="submit_note">Anonymous · No login required · 🔒 Data stored locally on your device</span>
       </div>
     </div>
   </div>
@@ -1242,14 +1281,14 @@
     <!-- CITIZEN REPORTS FEED -->
     <div class="panel">
       <div class="panel-header">
-        <span class="panel-title">Citizen Reports</span>
-        <span class="panel-badge badge-live">● LIVE FEED</span>
+        <span class="panel-title" data-i18n="panel_reports">Citizen Reports</span>
+        <span class="panel-badge badge-live" data-i18n="badge_live">● LIVE FEED</span>
       </div>
       <div style="border-bottom: 1px solid var(--border);">
         <div class="tabs" id="feed-tabs">
-          <div class="tab active" onclick="switchTab('all')">All Reports</div>
-          <div class="tab" onclick="switchTab('severe')">Severe</div>
-          <div class="tab" onclick="switchTab('shortage')">Shortages</div>
+          <div class="tab active" onclick="switchTab('all')" data-i18n="tab_all">All Reports</div>
+          <div class="tab" onclick="switchTab('severe')" data-i18n="tab_severe">Severe</div>
+          <div class="tab" onclick="switchTab('shortage')" data-i18n="tab_shortage">Shortages</div>
         </div>
       </div>
       <div id="report-feed" style="padding: 0 20px; max-height: 480px; overflow-y: auto;">
@@ -1260,20 +1299,20 @@
     <!-- OFFICIAL PRICES -->
     <div class="panel">
       <div class="panel-header">
-        <span class="panel-title">Official MRP vs Market</span>
-        <span class="panel-badge badge-warn">↑ VOLATILE</span>
+        <span class="panel-title" data-i18n="panel_prices">Official MRP vs Market</span>
+        <span class="panel-badge badge-warn" data-i18n="badge_volatile">↑ VOLATILE</span>
       </div>
       <div class="panel-body" style="padding: 16px 20px;">
         <div class="official-note">
-          ✓ Official prices sourced from Odisha Civil Supplies & OMC. Updated manually — contribute corrections on GitHub.
+          <span data-i18n="price_source_note">✓ Official prices sourced from Odisha Civil Supplies & OMC. Updated manually — contribute corrections on GitHub.</span>
         </div>
         <table class="commodity-table" id="price-table">
           <thead>
             <tr>
-              <th>Commodity</th>
-              <th>Official MRP</th>
-              <th>Reported</th>
-              <th>Status</th>
+              <th data-i18n="th_commodity">Commodity</th>
+              <th data-i18n="th_official">Official MRP</th>
+              <th data-i18n="th_reported">Reported</th>
+              <th data-i18n="th_status">Status</th>
             </tr>
           </thead>
           <tbody id="price-tbody">
@@ -1300,15 +1339,15 @@
   <!-- REPORT GENERATOR -->
   <div class="report-generator">
     <div class="rg-info">
-      <h3>📄 Generate Official Complaint</h3>
-      <p>Auto-compile all reported violations into a formal complaint letter addressed to the Balangir District Collector and Civil Supplies Officer. One click — ready to email or print.</p>
+      <h3 data-i18n="rg_title">📄 Generate Official Complaint</h3>
+      <p class="rg-desc" data-i18n="rg_desc">Auto-compile all reported violations into a formal complaint letter addressed to the Balangir District Collector and Civil Supplies Officer. One click — ready to email or print.</p>
     </div>
     <div class="rg-actions">
       <button class="btn-report" onclick="openReportModal('whatsapp')">
-        💬 Share via WhatsApp
+        <span data-i18n="btn_whatsapp">💬 Share via WhatsApp</span>
       </button>
       <button class="btn-report btn-report-primary" onclick="openReportModal('collector')">
-        📋 Generate DC Report
+        <span data-i18n="btn_dc_report">📋 Generate DC Report</span>
       </button>
     </div>
   </div>
@@ -1365,6 +1404,276 @@ const SHEETS_API_URL = '';  // e.g. 'https://script.google.com/macros/s/YOUR_DEP
 
 // Data source tracking
 let dataSource = 'local'; // 'local' or 'live'
+
+// ============================================================
+// i18n — ODIA LANGUAGE SUPPORT
+// ============================================================
+
+let currentLang = localStorage.getItem('ss_lang') || 'en';
+
+const i18n = {
+  en: {
+    // Header
+    crisis_badge: 'LPG Crisis Active',
+    // Section titles
+    section_dashboard: 'Market Health Dashboard',
+    // Form
+    form_title: 'Report a Price Violation',
+    form_desc: 'Seen overpricing? Report it in 30 seconds. Your report is anonymous and creates a paper trail.',
+    lbl_commodity: 'Commodity',
+    lbl_shop: 'Shop / Area Name',
+    lbl_official_mrp: 'Official MRP (₹)',
+    lbl_price_saw: 'Price You Saw (₹)',
+    lbl_difference: 'Difference',
+    lbl_area: 'Area in Balangir',
+    lbl_severity: 'Severity',
+    lbl_notes: 'Additional Details (Optional)',
+    btn_submit: '⚑ Submit Report',
+    btn_clear: 'Clear',
+    submit_note: 'Anonymous · No login required · 🔒 Data stored locally on your device',
+    // Severity options
+    sev_moderate: 'Moderate (10–50% above MRP)',
+    sev_severe: 'Severe (50–100% above MRP)',
+    sev_extreme: 'Extreme (100%+ above MRP)',
+    sev_shortage: 'Artificial Shortage (refusing to sell)',
+    // Panels
+    panel_reports: 'Citizen Reports',
+    badge_live: '● LIVE FEED',
+    tab_all: 'All Reports',
+    tab_severe: 'Severe',
+    tab_shortage: 'Shortages',
+    panel_prices: 'Official MRP vs Market',
+    badge_volatile: '↑ VOLATILE',
+    price_source_note: '✓ Official prices sourced from Odisha Civil Supplies & OMC. Updated manually — contribute corrections on GitHub.',
+    th_commodity: 'Commodity',
+    th_official: 'Official MRP',
+    th_reported: 'Reported',
+    th_status: 'Status',
+    // Hotspots
+    hotspot_title: 'Price Gouging Hotspots',
+    // Report generator
+    rg_title: '📄 Generate Official Complaint',
+    rg_desc: 'Auto-compile all reported violations into a formal complaint letter addressed to the Balangir District Collector and Civil Supplies Officer. One click — ready to email or print.',
+    btn_whatsapp: '💬 Share via WhatsApp',
+    btn_dc_report: '📋 Generate DC Report',
+    // Score cards
+    sc_mfi: 'Market Fairness Index',
+    sc_supply: 'Supply Health Score',
+    sc_reports: 'Reports This Week',
+    sc_violations: 'Violations Reported',
+    sc_from: 'From',
+    sc_areas_in: 'areas in',
+    sc_sent_to: 'Sent to District Collector',
+    // MFI labels
+    mfi_healthy: 'Healthy — Market operating fairly',
+    mfi_caution: 'Caution — Some anomalies detected',
+    mfi_warning: 'Warning — Significant gouging',
+    mfi_critical: 'Critical — Active gouging detected',
+    // Supply health
+    sh_stable: 'Stable — Supply chain normal',
+    sh_strain: 'Strain — Some disruptions',
+    sh_stressed: 'Stressed — Multiple disruptions',
+    sh_crisis: 'Crisis — Severe shortages',
+    // Feed
+    feed_empty: 'No reports yet. Be the first to report a price violation!',
+    feed_no_severe: 'No severe or extreme reports. Good news!',
+    feed_no_shortage: 'No shortage reports. Good news!',
+    feed_above_mrp: 'above MRP',
+    feed_confirm: 'Confirm',
+    // Toast
+    toast_submitted: 'Report Submitted!',
+    toast_above_mrp: 'above MRP in',
+    toast_thank: 'Thank you!',
+    toast_missing: 'Missing Fields',
+    toast_missing_desc: 'Please fill in commodity, shop, price, and area.',
+    toast_invalid: 'Invalid Price',
+    toast_invalid_desc: 'Please enter a valid price.',
+    // Placeholders
+    ph_select_commodity: 'Select commodity...',
+    ph_shop: 'e.g. Sanjay Kirana, Cantonment Rd',
+    ph_auto: 'Auto-filled',
+    ph_price: 'e.g. 2500',
+    ph_select_area: 'Select area...',
+    ph_notes: "Any extra context — e.g. 'shop owner said only selling to known customers'...",
+    // Price table statuses
+    status_ok: '✓ OK',
+    status_gouging: 'GOUGING',
+    // Data badge
+    ds_local: 'Local Data',
+    ds_live: 'Live Data',
+    // Hotspot levels
+    hs_high: 'HIGH RISK',
+    hs_med: 'MEDIUM',
+    hs_low: 'LOW RISK',
+    hs_reports: 'reports',
+    // Footer
+    footer_text: 'Open Source',
+    footer_built: 'Built for Balangir, Odisha',
+    footer_reset: 'Reset Demo Data',
+    footer_star: '⭐ Star on GitHub',
+  },
+  or: {
+    // Header
+    crisis_badge: 'LPG ସଙ୍କଟ ସକ୍ରିୟ',
+    // Section titles
+    section_dashboard: 'ବଜାର ସ୍ୱାସ୍ଥ୍ୟ ଡ୍ୟାସବୋର୍ଡ',
+    // Form
+    form_title: 'ମୂଲ୍ୟ ଉଲ୍ଲଙ୍ଘନ ରିପୋର୍ଟ କରନ୍ତୁ',
+    form_desc: 'ଅଧିକ ମୂଲ୍ୟ ଦେଖିଛନ୍ତି? ୩୦ ସେକେଣ୍ଡରେ ରିପୋର୍ଟ କରନ୍ତୁ। ଆପଣଙ୍କ ରିପୋର୍ଟ ଅଜ୍ଞାତ ଏବଂ ପ୍ରମାଣ ସୃଷ୍ଟି କରେ।',
+    lbl_commodity: 'ସାମଗ୍ରୀ',
+    lbl_shop: 'ଦୋକାନ / ସ୍ଥାନ ନାମ',
+    lbl_official_mrp: 'ସରକାରୀ MRP (₹)',
+    lbl_price_saw: 'ଆପଣ ଦେଖିଥିବା ମୂଲ୍ୟ (₹)',
+    lbl_difference: 'ଫରକ',
+    lbl_area: 'ବଲାଙ୍ଗୀରରେ ଅଞ୍ଚଳ',
+    lbl_severity: 'ଗୁରୁତର',
+    lbl_notes: 'ଅତିରିକ୍ତ ବିବରଣୀ (ଐଚ୍ଛିକ)',
+    btn_submit: '⚑ ରିପୋର୍ଟ ଦାଖଲ କରନ୍ତୁ',
+    btn_clear: 'ସଫା କରନ୍ତୁ',
+    submit_note: 'ଅଜ୍ଞାତ · ଲଗଇନ ଆବଶ୍ୟକ ନାହିଁ · 🔒 ଡାଟା ଆପଣଙ୍କ ଡିଭାଇସରେ ସଂରକ୍ଷିତ',
+    // Severity options
+    sev_moderate: 'ମଧ୍ୟମ (MRP ଠାରୁ ୧୦–୫୦% ଅଧିକ)',
+    sev_severe: 'ଗୁରୁତର (MRP ଠାରୁ ୫୦–୧୦୦% ଅଧିକ)',
+    sev_extreme: 'ଅତ୍ୟଧିକ (MRP ଠାରୁ ୧୦୦%+ ଅଧିକ)',
+    sev_shortage: 'କୃତ୍ରିମ ଅଭାବ (ବିକ୍ରି କରିବାକୁ ମନା)',
+    // Panels
+    panel_reports: 'ନାଗରିକ ରିପୋର୍ଟ',
+    badge_live: '● ସିଧା ଫିଡ୍',
+    tab_all: 'ସମସ୍ତ ରିପୋର୍ଟ',
+    tab_severe: 'ଗୁରୁତର',
+    tab_shortage: 'ଅଭାବ',
+    panel_prices: 'ସରକାରୀ MRP ବନାମ ବଜାର',
+    badge_volatile: '↑ ଅସ୍ଥିର',
+    price_source_note: '✓ ସରକାରୀ ମୂଲ୍ୟ ଓଡ଼ିଶା ସିଭିଲ ସପ୍ଲାଇ ଏବଂ OMC ରୁ। GitHub ରେ ସଂଶୋଧନ ଦିଅନ୍ତୁ।',
+    th_commodity: 'ସାମଗ୍ରୀ',
+    th_official: 'ସରକାରୀ MRP',
+    th_reported: 'ରିପୋର୍ଟ ହୋଇଛି',
+    th_status: 'ସ୍ଥିତି',
+    // Hotspots
+    hotspot_title: 'ମୂଲ୍ୟ ବୃଦ୍ଧି ହଟସ୍ପଟ',
+    // Report generator
+    rg_title: '📄 ସରକାରୀ ଅଭିଯୋଗ ତିଆରି କରନ୍ତୁ',
+    rg_desc: 'ସମସ୍ତ ରିପୋର୍ଟ ହୋଇଥିବା ଉଲ୍ଲଙ୍ଘନକୁ ବଲାଙ୍ଗୀର ଜିଲ୍ଲା ପାଳଙ୍କ ନିକଟରେ ଏକ ଔପଚାରିକ ଅଭିଯୋଗ ପତ୍ରରେ ସଂକଳନ କରନ୍ତୁ। ଗୋଟିଏ କ୍ଲିକ — ଇମେଲ ବା ପ୍ରିଣ୍ଟ ପାଇଁ ପ୍ରସ୍ତୁତ।',
+    btn_whatsapp: '💬 ୱାଟ୍ସଆପରେ ସେୟାର କରନ୍ତୁ',
+    btn_dc_report: '📋 DC ରିପୋର୍ଟ ତିଆରି କରନ୍ତୁ',
+    // Score cards
+    sc_mfi: 'ବଜାର ନ୍ୟାୟ ସୂଚକାଙ୍କ',
+    sc_supply: 'ଯୋଗାଣ ସ୍ୱାସ୍ଥ୍ୟ ସ୍କୋର',
+    sc_reports: 'ଏହି ସପ୍ତାହର ରିପୋର୍ଟ',
+    sc_violations: 'ଉଲ୍ଲଙ୍ଘନ ରିପୋର୍ଟ ହୋଇଛି',
+    sc_from: '',
+    sc_areas_in: 'ଅଞ୍ଚଳରୁ',
+    sc_sent_to: 'ଜିଲ୍ଲା ପାଳଙ୍କୁ ପଠାଯାଇଛି',
+    // MFI labels
+    mfi_healthy: 'ସୁସ୍ଥ — ବଜାର ନ୍ୟାୟସଙ୍ଗତ ଭାବେ ଚାଲୁଛି',
+    mfi_caution: 'ସାବଧାନ — କିଛି ଅସଙ୍ଗତି ଚିହ୍ନଟ',
+    mfi_warning: 'ଚେତାବନୀ — ଗୁରୁତର ମୂଲ୍ୟ ବୃଦ୍ଧି',
+    mfi_critical: 'ସଙ୍କଟ — ସକ୍ରିୟ ମୂଲ୍ୟ ବୃଦ୍ଧି ଚିହ୍ନଟ',
+    // Supply health
+    sh_stable: 'ସ୍ଥିର — ଯୋଗାଣ ଶୃଙ୍ଖଳ ସ୍ୱାଭାବିକ',
+    sh_strain: 'ଚାପ — କିଛି ବ୍ୟାଘାତ',
+    sh_stressed: 'ଚାପଗ୍ରସ୍ତ — ଏକାଧିକ ବ୍ୟାଘାତ',
+    sh_crisis: 'ସଙ୍କଟ — ଗୁରୁତର ଅଭାବ',
+    // Feed
+    feed_empty: 'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ରିପୋର୍ଟ ନାହିଁ। ପ୍ରଥମେ ରିପୋର୍ଟ କରନ୍ତୁ!',
+    feed_no_severe: 'କୌଣସି ଗୁରୁତର ରିପୋର୍ଟ ନାହିଁ। ଭଲ ଖବର!',
+    feed_no_shortage: 'କୌଣସି ଅଭାବ ରିପୋର୍ଟ ନାହିଁ। ଭଲ ଖବର!',
+    feed_above_mrp: 'MRP ଠାରୁ ଅଧିକ',
+    feed_confirm: 'ନିଶ୍ଚିତ କରନ୍ତୁ',
+    // Toast
+    toast_submitted: 'ରିପୋର୍ଟ ଦାଖଲ ହୋଇଛି!',
+    toast_above_mrp: 'MRP ଠାରୁ ଅଧିକ',
+    toast_thank: 'ଧନ୍ୟବାଦ!',
+    toast_missing: 'ଅନୁପସ୍ଥିତ ତଥ୍ୟ',
+    toast_missing_desc: 'ଦୟାକରି ସାମଗ୍ରୀ, ଦୋକାନ, ମୂଲ୍ୟ ଏବଂ ଅଞ୍ଚଳ ପୂରଣ କରନ୍ତୁ।',
+    toast_invalid: 'ଅବୈଧ ମୂଲ୍ୟ',
+    toast_invalid_desc: 'ଦୟାକରି ଏକ ବୈଧ ମୂଲ୍ୟ ପ୍ରବେଶ କରନ୍ତୁ।',
+    // Placeholders
+    ph_select_commodity: 'ସାମଗ୍ରୀ ବାଛନ୍ତୁ...',
+    ph_shop: 'ଉଦା. ସଞ୍ଜୟ କିରାଣା, କ୍ୟାଣ୍ଟନମେଣ୍ଟ ରୋଡ',
+    ph_auto: 'ସ୍ୱୟଂ ପୂରଣ',
+    ph_price: 'ଉଦା. ୨୫୦୦',
+    ph_select_area: 'ଅଞ୍ଚଳ ବାଛନ୍ତୁ...',
+    ph_notes: "ଅତିରିକ୍ତ ସନ୍ଦର୍ଭ — ଉଦା. 'ଦୋକାନୀ କହିଲେ କେବଳ ଚିହ୍ନା ଗ୍ରାହକଙ୍କୁ ବିକ୍ରି'...",
+    // Price table statuses
+    status_ok: '✓ ଠିକ',
+    status_gouging: 'ମୂଲ୍ୟ ବୃଦ୍ଧି',
+    // Data badge
+    ds_local: 'ସ୍ଥାନୀୟ ଡାଟା',
+    ds_live: 'ସିଧା ଡାଟା',
+    // Hotspot levels
+    hs_high: 'ଉଚ୍ଚ ବିପଦ',
+    hs_med: 'ମଧ୍ୟମ',
+    hs_low: 'କମ ବିପଦ',
+    hs_reports: 'ରିପୋର୍ଟ',
+    // Footer
+    footer_text: 'ମୁକ୍ତ ଉତ୍ସ',
+    footer_built: 'ବଲାଙ୍ଗୀର, ଓଡ଼ିଶା ପାଇଁ ନିର୍ମିତ',
+    footer_reset: 'ଡେମୋ ଡାଟା ରିସେଟ',
+    footer_star: '⭐ GitHub ରେ ଷ୍ଟାର',
+  }
+};
+
+function t(key) {
+  return (i18n[currentLang] && i18n[currentLang][key]) || (i18n.en[key]) || key;
+}
+
+function switchLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('ss_lang', lang);
+  // Update toggle buttons
+  document.querySelectorAll('#lang-toggle .lang-opt').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  // Update html lang attribute
+  document.documentElement.lang = lang === 'or' ? 'or' : 'en';
+  // Translate all data-i18n elements
+  applyTranslations();
+  // Re-render dynamic content
+  if (typeof renderScoreCards === 'function') renderScoreCards();
+  if (typeof renderFeed === 'function') renderFeed(currentFilter);
+  if (typeof renderPriceTable === 'function') renderPriceTable();
+  if (typeof renderHotspots === 'function') renderHotspots();
+  // Update severity dropdown
+  updateSeverityOptions();
+  // Update placeholders
+  updatePlaceholders();
+  // Update data source badge text
+  updateDataSourceBadge(dataSource);
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const text = t(key);
+    if (text) el.textContent = text;
+  });
+}
+
+function updateSeverityOptions() {
+  const sel = document.getElementById('f-severity');
+  if (!sel) return;
+  const opts = sel.options;
+  if (opts[0]) opts[0].textContent = t('sev_moderate');
+  if (opts[1]) opts[1].textContent = t('sev_severe');
+  if (opts[2]) opts[2].textContent = t('sev_extreme');
+  if (opts[3]) opts[3].textContent = t('sev_shortage');
+}
+
+function updatePlaceholders() {
+  const fCommodity = document.getElementById('f-commodity');
+  if (fCommodity && fCommodity.options[0]) fCommodity.options[0].textContent = t('ph_select_commodity');
+  const fShop = document.getElementById('f-shop');
+  if (fShop) fShop.placeholder = t('ph_shop');
+  const fOfficial = document.getElementById('f-official');
+  if (fOfficial) fOfficial.placeholder = t('ph_auto');
+  const fReported = document.getElementById('f-reported');
+  if (fReported) fReported.placeholder = t('ph_price');
+  const fArea = document.getElementById('f-area');
+  if (fArea && fArea.options[0]) fArea.options[0].textContent = t('ph_select_area');
+  const fNotes = document.getElementById('f-notes');
+  if (fNotes) fNotes.placeholder = t('ph_notes');
+}
 
 // These will be populated from config (with hardcoded fallbacks)
 let DISTRICT_CONFIG = null;
@@ -1592,10 +1901,10 @@ function updateDataSourceBadge(source) {
   if (!badge) return;
   if (source === 'live') {
     badge.classList.add('live');
-    badge.innerHTML = '<div class="ds-dot"></div><span>Live Data</span>';
+    badge.innerHTML = `<div class="ds-dot"></div><span>${t('ds_live')}</span>`;
   } else {
     badge.classList.remove('live');
-    badge.innerHTML = '<div class="ds-dot"></div><span>Local Data</span>';
+    badge.innerHTML = `<div class="ds-dot"></div><span>${t('ds_local')}</span>`;
   }
 }
 
@@ -1644,10 +1953,10 @@ function calculateMFI() {
   const score = Math.max(0, Math.min(100, Math.round(100 - penalty)));
 
   let label, color;
-  if (score >= 80) { label = 'Healthy — Market operating fairly'; color = 'var(--green)'; }
-  else if (score >= 60) { label = 'Caution — Some anomalies detected'; color = 'var(--yellow)'; }
-  else if (score >= 40) { label = 'Warning — Significant gouging'; color = 'var(--accent2)'; }
-  else { label = 'Critical — Active gouging detected'; color = 'var(--red)'; }
+  if (score >= 80) { label = t('mfi_healthy'); color = 'var(--green)'; }
+  else if (score >= 60) { label = t('mfi_caution'); color = 'var(--yellow)'; }
+  else if (score >= 40) { label = t('mfi_warning'); color = 'var(--accent2)'; }
+  else { label = t('mfi_critical'); color = 'var(--red)'; }
 
   return { score, label, color };
 }
@@ -1672,10 +1981,10 @@ function calculateSupplyHealth() {
   const score = Math.max(0, Math.min(100, Math.round(100 - totalPenalty)));
 
   let label, color;
-  if (score >= 80) { label = 'Stable — Supply chains healthy'; color = 'var(--green)'; }
-  else if (score >= 60) { label = 'Moderate — Some constraints'; color = 'var(--yellow)'; }
-  else if (score >= 40) { label = 'Strained — Multiple commodities affected'; color = 'var(--accent2)'; }
-  else { label = 'Critical — Severe supply disruption'; color = 'var(--red)'; }
+  if (score >= 80) { label = t('sh_stable'); color = 'var(--green)'; }
+  else if (score >= 60) { label = t('sh_strain'); color = 'var(--yellow)'; }
+  else if (score >= 40) { label = t('sh_stressed'); color = 'var(--accent2)'; }
+  else { label = t('sh_crisis'); color = 'var(--red)'; }
 
   return { score, label, color };
 }
@@ -1694,27 +2003,27 @@ function renderScoreCards() {
   const container = document.getElementById('scores-row');
   container.innerHTML = `
     <div class="score-card" style="--card-glow: ${mfi.color === 'var(--red)' ? 'rgba(255,23,68,0.12)' : mfi.color === 'var(--yellow)' ? 'rgba(255,215,64,0.08)' : mfi.color === 'var(--green)' ? 'rgba(0,230,118,0.06)' : 'rgba(255,77,28,0.08)'};">
-      <div class="score-label">Market Fairness Index</div>
+      <div class="score-label">${t('sc_mfi')}</div>
       <div class="score-value" style="color: ${mfi.color};">${mfi.score}<span style="font-size:20px">/100</span></div>
       <div class="score-sub">${mfi.label}</div>
       <div class="score-bar"><div class="score-bar-fill" style="width:${mfi.score}%; background: ${mfi.color};"></div></div>
     </div>
     <div class="score-card" style="--card-glow: ${supply.color === 'var(--red)' ? 'rgba(255,23,68,0.12)' : supply.color === 'var(--yellow)' ? 'rgba(255,215,64,0.08)' : supply.color === 'var(--green)' ? 'rgba(0,230,118,0.06)' : 'rgba(255,77,28,0.08)'};">
-      <div class="score-label">Supply Health Score</div>
+      <div class="score-label">${t('sc_supply')}</div>
       <div class="score-value" style="color: ${supply.color};">${supply.score}<span style="font-size:20px">/100</span></div>
       <div class="score-sub">${supply.label}</div>
       <div class="score-bar"><div class="score-bar-fill" style="width:${supply.score}%; background: ${supply.color};"></div></div>
     </div>
     <div class="score-card" style="--card-glow: rgba(255,77,28,0.08);">
-      <div class="score-label">Reports This Week</div>
+      <div class="score-label">${t('sc_reports')}</div>
       <div class="score-value" style="color: var(--accent2);"><span class="counter" id="report-count">${reportCount}</span></div>
-      <div class="score-sub">From <span id="area-count">${areas.size}</span> areas in ${DISTRICT_CONFIG ? DISTRICT_CONFIG.district : 'Balangir'}</div>
+      <div class="score-sub">${t('sc_from')} <span id="area-count">${areas.size}</span> ${t('sc_areas_in')} ${DISTRICT_CONFIG ? DISTRICT_CONFIG.district : 'Balangir'}</div>
       <div class="score-bar"><div class="score-bar-fill" style="width:${Math.min(reportCount * 5, 100)}%; background: var(--accent2);"></div></div>
     </div>
     <div class="score-card" style="--card-glow: rgba(0,230,118,0.06);">
-      <div class="score-label">Violations Reported</div>
+      <div class="score-label">${t('sc_violations')}</div>
       <div class="score-value" style="color: var(--green);">${complaintsSent}</div>
-      <div class="score-sub">Sent to District Collector</div>
+      <div class="score-sub">${t('sc_sent_to')}</div>
       <div class="score-bar"><div class="score-bar-fill" style="width:${Math.min(complaintsSent * 10, 100)}%; background: var(--green);"></div></div>
     </div>
   `;
@@ -1743,8 +2052,7 @@ function renderFeed(filter = 'all') {
   if (reports.length === 0) {
     container.innerHTML = `<div class="empty-state">
       <div class="es-icon">📭</div>
-      <div style="font-size:14px;color:var(--text2);">No reports in this category${areaFilter ? ' for ' + areaFilter : ''} yet.</div>
-      <p>Be the first to report a violation!</p>
+      <div style="font-size:14px;color:var(--text2);">${t('feed_empty')}</div>
       ${areaFilter ? `<button class="btn-secondary" style="margin-top:12px;" onclick="clearAreaFilter()">Clear Filter</button>` : ''}
     </div>`;
     return;
@@ -1771,7 +2079,7 @@ function renderFeed(filter = 'all') {
         <div class="report-meta"><strong>${r.commodity}</strong> at ${r.shop}</div>
         <div class="report-detail" style="color:${severityColor};">
           ₹${r.official} → ₹${r.reported}
-          <span style="font-family:var(--mono);font-size:11px;margin-left:6px;opacity:0.8;">+${pct}% above MRP</span>
+          <span style="font-family:var(--mono);font-size:11px;margin-left:6px;opacity:0.8;">+${pct}% ${t('feed_above_mrp')}</span>
         </div>
         <div class="report-tags">
           <span class="tag tag-location">📍 ${r.area}</span>
@@ -1833,17 +2141,18 @@ function renderHotspots() {
   // Update dynamic hotspot badge
   const highRiskCount = HOTSPOTS.filter(h => h.level === 'high').length;
   const badge = document.getElementById('hotspot-badge');
-  if (badge) badge.textContent = `⚠ ${highRiskCount} HIGH-RISK AREA${highRiskCount !== 1 ? 'S' : ''}`;
+  if (badge) badge.textContent = `⚠ ${highRiskCount} ${t('hs_high')}`;
 
   grid.innerHTML = HOTSPOTS.map(h => {
     const pct = Math.round((h.reports / maxReports) * 100);
     const heatColor = h.level === 'high' ? 'heat-high' : h.level === 'med' ? 'heat-med' : 'heat-low';
     const dotColor = h.level === 'high' ? 'var(--red)' : h.level === 'med' ? 'var(--yellow)' : 'var(--green)';
+    const levelText = h.level === 'high' ? t('hs_high') : h.level === 'med' ? t('hs_med') : t('hs_low');
 
     return `<div class="hotspot-card" onclick="filterByArea('${h.area}')">
       <div class="hotspot-heat" style="background:${dotColor};"></div>
       <div class="hotspot-area">${h.area}</div>
-      <div class="hotspot-count">${h.reports} report${h.reports !== 1 ? 's' : ''}</div>
+      <div class="hotspot-count">${h.reports} ${t('hs_reports')}</div>
       <div class="hotspot-bar"><div class="hotspot-fill ${heatColor}" style="width:${pct}%"></div></div>
     </div>`;
   }).join('');
@@ -1899,12 +2208,12 @@ function submitReport() {
   const notes = document.getElementById('f-notes').value;
 
   if (!commodity || !shop || !reported || !area) {
-    showToast('⚠️', 'Missing Fields', 'Please fill in commodity, shop, price, and area.');
+    showToast('⚠️', t('toast_missing'), t('toast_missing_desc'));
     return;
   }
 
   if (reported <= 0) {
-    showToast('⚠️', 'Invalid Price', 'Please enter a valid price.');
+    showToast('⚠️', t('toast_invalid'), t('toast_invalid_desc'));
     return;
   }
 
@@ -1951,7 +2260,7 @@ function submitReport() {
 
   const diff = reported - (official || 0);
   const pct = official ? Math.round((diff / official) * 100) : 0;
-  showToast('✅', 'Report Submitted!', `${commodity} +${pct}% above MRP in ${area}. Thank you!`);
+  showToast('✅', t('toast_submitted'), `${commodity} +${pct}% ${t('toast_above_mrp')} ${area}. ${t('toast_thank')}`);
 }
 
 function clearForm() {
@@ -2215,6 +2524,15 @@ async function init() {
       saveReports(allReports);
     }
     updateDataSourceBadge('local');
+  }
+
+  // Apply saved language preference
+  if (currentLang !== 'en') {
+    switchLang(currentLang);
+  } else {
+    applyTranslations();
+    updatePlaceholders();
+    updateSeverityOptions();
   }
 
   // Render everything
