@@ -31,11 +31,11 @@ Every time a supply chain crisis hits — a global oil shock, a transport strike
 
 ```mermaid
 flowchart TD
-    A["🏪 Essential commodities DISAPPEAR\nfrom fair-price shops"] --> B["💰 REAPPEAR on black market\nat 2x – 3x official price"]
-    B --> C["👨‍👩‍👧‍👦 Families earning ₹200–300/day\nare FORCED to overpay"]
-    C --> D["🏛️ Authorities DON'T KNOW\nNo real-time ground data"]
-    D --> E["🔄 Middlemen PROFIT\nCitizens SUFFER\nThe cycle REPEATS"]
-    E -->|"SupplySentinel\nbreaks this cycle"| F["📊 Citizens report → Data aggregates\n→ Authorities act"]
+    A["🏪 Essential commodities DISAPPEAR<br>from fair-price shops"] --> B["💰 REAPPEAR on black market<br>at 2x – 3x official price"]
+    B --> C["👨‍👩‍👧‍👦 Families earning ₹200–300/day<br>are FORCED to overpay"]
+    C --> D["🏛️ Authorities DON'T KNOW<br>No real-time ground data"]
+    D --> E["🔄 Middlemen PROFIT<br>Citizens SUFFER<br>The cycle REPEATS"]
+    E -->|"SupplySentinel<br>breaks this cycle"| F["📊 Citizens report → Data aggregates<br>→ Authorities act"]
 
     style A fill:#1a1a2e,stroke:#ff4d1c,color:#fff
     style B fill:#1a1a2e,stroke:#ff1744,color:#fff
@@ -69,7 +69,7 @@ block-beta
         gap4["→ ₹80 (129%↑)"]
     end
     block:impact["💔 HUMAN COST"]:1
-        cost1["A worker's ENTIRE\nWEEK'S salary\nfor ONE LPG cylinder"]
+        cost1["A worker's ENTIRE<br>WEEK'S salary<br>for ONE LPG cylinder"]
     end
 
     style official fill:#0d2818,stroke:#00e676,color:#e8eaf0
@@ -97,30 +97,30 @@ When this crisis hit Balangir, there was **no way** for citizens to:
 ```mermaid
 flowchart LR
     subgraph STEP1["📝 STEP 1: REPORT"]
-        A1["Citizen sees\noverpricing"]
-        A2["Opens app\n(no login needed)"]
-        A3["Submits report\nanonymously"]
+        A1["Citizen sees<br>overpricing"]
+        A2["Opens app<br>(no login needed)"]
+        A3["Submits report<br>anonymously"]
         A1 --> A2 --> A3
     end
 
     subgraph STEP2["✅ STEP 2: VALIDATE"]
-        B1["Platform checks\nagainst official\nMRP data"]
-        B2["Report appears\nin live feed"]
-        B3["Community\nupvotes to\nconfirm"]
+        B1["Platform checks<br>against official<br>MRP data"]
+        B2["Report appears<br>in live feed"]
+        B3["Community<br>upvotes to<br>confirm"]
         B1 --> B2 --> B3
     end
 
     subgraph STEP3["📊 STEP 3: ANALYZE"]
-        C1["Market Fairness\nIndex updates"]
-        C2["Hotspot grid\nshows affected\nareas"]
-        C3["Severity auto-\ngraded"]
+        C1["Market Fairness<br>Index updates"]
+        C2["Hotspot grid<br>shows affected<br>areas"]
+        C3["Severity auto-<br>graded"]
         C1 --> C2 --> C3
     end
 
     subgraph STEP4["⚡ STEP 4: ACT"]
-        D1["DC complaint\nletter auto-\ngenerated"]
-        D2["Sent to District\nCollector"]
-        D3["WhatsApp alert\nspreads to\ncommunity"]
+        D1["DC complaint<br>letter auto-<br>generated"]
+        D2["Sent to District<br>Collector"]
+        D3["WhatsApp alert<br>spreads to<br>community"]
         D1 --> D2 --> D3
     end
 
@@ -137,17 +137,17 @@ flowchart LR
 ```mermaid
 flowchart TB
     subgraph existing["❌ EXISTING SYSTEMS"]
-        E1["Consumer Helpline\n1800-11-4000\n<i>Slow, one complaint\nat a time, no aggregation</i>"]
-        E2["Social Media Posts\n'LPG price high!'\n<i>Scattered, no verification,\nno official follow-up</i>"]
-        E3["Govt Price Portals\n<i>Top-down only,\nno ground truth</i>"]
-        E4["RTI / Legal Routes\n<i>Weeks to months,\nrequires legal knowledge</i>"]
+        E1["Consumer Helpline<br>1800-11-4000<br><i>Slow, one complaint<br>at a time, no aggregation</i>"]
+        E2["Social Media Posts<br>'LPG price high!'<br><i>Scattered, no verification,<br>no official follow-up</i>"]
+        E3["Govt Price Portals<br><i>Top-down only,<br>no ground truth</i>"]
+        E4["RTI / Legal Routes<br><i>Weeks to months,<br>requires legal knowledge</i>"]
     end
 
     subgraph ss["✅ SUPPLYSENTINEL"]
-        S1["Instant aggregation\nPattern detection\nacross the district"]
-        S2["Structured data\nMRP auto-compared\nEvidence-grade reports"]
-        S3["Bottom-up + top-down\nGround truth from\nactual buyers"]
-        S4["Real-time\nAuto-generates formal\nDC complaint letters"]
+        S1["Instant aggregation<br>Pattern detection<br>across the district"]
+        S2["Structured data<br>MRP auto-compared<br>Evidence-grade reports"]
+        S3["Bottom-up + top-down<br>Ground truth from<br>actual buyers"]
+        S4["Real-time<br>Auto-generates formal<br>DC complaint letters"]
     end
 
     E1 -.->|"replaced by"| S1
@@ -178,16 +178,16 @@ pie title MFI Penalty Weight Distribution
 ```mermaid
 flowchart LR
     subgraph inputs["📥 INPUTS"]
-        I1["All citizen\nprice reports"]
-        I2["Official MRP\ndata"]
+        I1["All citizen<br>price reports"]
+        I2["Official MRP<br>data"]
     end
 
     subgraph calc["🔢 CALCULATION"]
-        C1["Violation Rate (40%)\nWhat % exceed MRP?"]
-        C2["Avg Deviation (35%)\nHow far above MRP?"]
-        C3["Severity (15%)\nExtreme=3x, Severe=2x"]
-        C4["Confidence (10%)\n<5 reports = less sure"]
-        C5["Weighted\nPenalty"]
+        C1["Violation Rate (40%)<br>What % exceed MRP?"]
+        C2["Avg Deviation (35%)<br>How far above MRP?"]
+        C3["Severity (15%)<br>Extreme=3x, Severe=2x"]
+        C4["Confidence (10%)<br><5 reports = less sure"]
+        C5["Weighted<br>Penalty"]
         C1 --> C5
         C2 --> C5
         C3 --> C5
@@ -209,9 +209,9 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    G["🟢 80–100\nHEALTHY\nPrices near MRP"] ~~~ Y["🟡 60–79\nMINOR ANOMALIES\nWatch closely"]
-    Y ~~~ A["🟠 40–59\nMARKET STRESS\n→ Alert Civil Supplies"]
-    A ~~~ R["🔴 < 40\nCRITICAL\n→ Escalate to DC"]
+    G["🟢 80–100<br>HEALTHY<br>Prices near MRP"] ~~~ Y["🟡 60–79<br>MINOR ANOMALIES<br>Watch closely"]
+    Y ~~~ A["🟠 40–59<br>MARKET STRESS<br>→ Alert Civil Supplies"]
+    A ~~~ R["🔴 < 40<br>CRITICAL<br>→ Escalate to DC"]
 
     style G fill:#0d2818,stroke:#00e676,color:#e8eaf0
     style Y fill:#2e2a0a,stroke:#ffd740,color:#e8eaf0
@@ -231,24 +231,24 @@ flowchart LR
 ```mermaid
 flowchart TB
     subgraph mvp["✅ MVP — LIVE NOW"]
-        M1["📝 Anonymous\nReporting"]
-        M2["📡 Live Report\nFeed"]
-        M3["👍 Community\nUpvoting"]
-        M4["📊 MRP vs Market\nComparison"]
-        M5["🎯 Market Fairness\nIndex"]
-        M6["🗺️ Hotspot\nGrid"]
-        M7["📄 DC Complaint\nGenerator"]
-        M8["💬 WhatsApp\nSharing"]
+        M1["📝 Anonymous<br>Reporting"]
+        M2["📡 Live Report<br>Feed"]
+        M3["👍 Community<br>Upvoting"]
+        M4["📊 MRP vs Market<br>Comparison"]
+        M5["🎯 Market Fairness<br>Index"]
+        M6["🗺️ Hotspot<br>Grid"]
+        M7["📄 DC Complaint<br>Generator"]
+        M8["💬 WhatsApp<br>Sharing"]
     end
 
     subgraph v1["🔨 v1.0 — IN DEVELOPMENT"]
-        V1["☁️ Google Sheets\nBackend"]
-        V2["🇮🇳 Odia Language\nToggle"]
-        V3["🤖 AI Supply\nExplainer"]
-        V4["📷 Photo Evidence\nUpload"]
-        V5["📱 PWA + Offline\nMode"]
-        V6["📧 Direct Email\nComplaints"]
-        V7["🏛️ Multi-District\nFork System"]
+        V1["☁️ Google Sheets<br>Backend"]
+        V2["🇮🇳 Odia Language<br>Toggle"]
+        V3["🤖 AI Supply<br>Explainer"]
+        V4["📷 Photo Evidence<br>Upload"]
+        V5["📱 PWA + Offline<br>Mode"]
+        V6["📧 Direct Email<br>Complaints"]
+        V7["🏛️ Multi-District<br>Fork System"]
     end
 
     mvp -->|"upgrading to"| v1
@@ -263,25 +263,25 @@ flowchart TB
 flowchart TB
     subgraph phone["📱 CITIZEN'S PHONE (Low-end Android, Chrome)"]
         subgraph app["index.html — Single-file PWA"]
-            RF["Report\nForm"]
-            LF["Live\nFeed"]
-            MH["Market\nHealth"]
-            HG["Hotspot\nGrid"]
-            CG["Complaint\nGenerator"]
+            RF["Report<br>Form"]
+            LF["Live<br>Feed"]
+            MH["Market<br>Health"]
+            HG["Hotspot<br>Grid"]
+            CG["Complaint<br>Generator"]
         end
-        LS["💾 localStorage\n(offline fallback)"]
+        LS["💾 localStorage<br>(offline fallback)"]
         app <--> LS
     end
 
     subgraph cloud["☁️ CLOUD SERVICES (All Free Tier)"]
-        GS["📊 Google Sheets\n(Database)\nApps Script API\nFREE"]
-        GM["🤖 Gemini 1.5 Flash\n(AI Explainer)\n15 RPM FREE"]
-        EJ["📧 EmailJS\n(Complaints)\n200/month FREE"]
-        CL["🖼️ Cloudinary\n(Photo Storage)\n25GB FREE"]
+        GS["📊 Google Sheets<br>(Database)<br>Apps Script API<br>FREE"]
+        GM["🤖 Gemini 1.5 Flash<br>(AI Explainer)<br>15 RPM FREE"]
+        EJ["📧 EmailJS<br>(Complaints)<br>200/month FREE"]
+        CL["🖼️ Cloudinary<br>(Photo Storage)<br>25GB FREE"]
     end
 
     subgraph host["🌐 HOSTING"]
-        GP["GitHub Pages\nStatic · FREE\nZero config"]
+        GP["GitHub Pages<br>Static · FREE<br>Zero config"]
     end
 
     app <-->|"reports & data"| GS
@@ -290,7 +290,7 @@ flowchart TB
     app -->|"upload photo"| CL
     GP -->|"serves"| phone
 
-    EJ -->|"delivers to"| DC["🏛️ District Collector\n& Civil Supplies Officer"]
+    EJ -->|"delivers to"| DC["🏛️ District Collector<br>& Civil Supplies Officer"]
 
     style phone fill:#111318,stroke:#63b3ed,color:#e8eaf0
     style cloud fill:#111318,stroke:#ff8c42,color:#e8eaf0
@@ -304,19 +304,19 @@ flowchart TB
 
 ```mermaid
 flowchart TD
-    START["👩 A woman in Gandhi Chowk, Balangir\npaid ₹2,500 for a ₹939 LPG cylinder"] --> OPEN["📱 Opens SupplySentinel\non her Android phone\n(no signup, no login, no download)"]
+    START["👩 A woman in Gandhi Chowk, Balangir<br>paid ₹2,500 for a ₹939 LPG cylinder"] --> OPEN["📱 Opens SupplySentinel<br>on her Android phone<br>(no signup, no login, no download)"]
 
-    OPEN --> REPORT["📝 REPORTS the violation\n━━━━━━━━━━━━━━━━━━━━\nCommodity: LPG Cylinder\nShop: Mahesh Gas Agency\nArea: Gandhi Chowk\nMRP: ₹939 (auto-filled)\nPaid: ₹2,500\nMarkup: +167% EXTREME\nPhoto: 📷 receipt attached"]
+    OPEN --> REPORT["📝 REPORTS the violation<br>━━━━━━━━━━━━━━━━━━━━<br>Commodity: LPG Cylinder<br>Shop: Mahesh Gas Agency<br>Area: Gandhi Chowk<br>MRP: ₹939 (auto-filled)<br>Paid: ₹2,500<br>Markup: +167% EXTREME<br>Photo: 📷 receipt attached"]
 
-    REPORT --> FEED["📡 Report appears in LIVE FEED\nNeighbors see it → upvote\n'Yes, same happened to me'\n3 upvotes = validated evidence"]
+    REPORT --> FEED["📡 Report appears in LIVE FEED<br>Neighbors see it → upvote<br>'Yes, same happened to me'<br>3 upvotes = validated evidence"]
 
-    FEED --> SCORE["📊 MARKET FAIRNESS INDEX\nupdates: 42 → 38 (CRITICAL 🔴)\nGandhi Chowk glows red\non HOTSPOT GRID"]
+    FEED --> SCORE["📊 MARKET FAIRNESS INDEX<br>updates: 42 → 38 (CRITICAL 🔴)<br>Gandhi Chowk glows red<br>on HOTSPOT GRID"]
 
-    SCORE --> COMPLAINT["📄 She taps 'Generate DC Report'\n━━━━━━━━━━━━━━━━━━━━━━━━━━\nFORMAL COMPLAINT auto-generated\nTo: District Collector, Balangir\nCC: Civil Supplies Officer\nEvidence: 5 reports, 12 confirmations\nUnder: Essential Commodities Act, 1955"]
+    SCORE --> COMPLAINT["📄 She taps 'Generate DC Report'<br>━━━━━━━━━━━━━━━━━━━━━━━━━━<br>FORMAL COMPLAINT auto-generated<br>To: District Collector, Balangir<br>CC: Civil Supplies Officer<br>Evidence: 5 reports, 12 confirmations<br>Under: Essential Commodities Act, 1955"]
 
-    COMPLAINT --> SHARE["💬 She taps 'Share via WhatsApp'\n'🚨 BALANGIR MARKET ALERT —\nLPG at ₹2,500 in Gandhi Chowk...'\nAlert spreads to family groups"]
+    COMPLAINT --> SHARE["💬 She taps 'Share via WhatsApp'<br>'🚨 BALANGIR MARKET ALERT —<br>LPG at ₹2,500 in Gandhi Chowk...'<br>Alert spreads to family groups"]
 
-    SHARE --> LOOP["🔄 More citizens report\n→ stronger evidence\n→ authorities act\n→ prices normalize"]
+    SHARE --> LOOP["🔄 More citizens report<br>→ stronger evidence<br>→ authorities act<br>→ prices normalize"]
 
     style START fill:#2e0a0a,stroke:#ff1744,color:#e8eaf0
     style OPEN fill:#111318,stroke:#63b3ed,color:#e8eaf0
@@ -334,9 +334,9 @@ flowchart TD
 
 ```mermaid
 mindmap
-  root((SupplySentinel\nfor India))
+  root((SupplySentinel<br>for India))
     780+ Districts
-      Each vulnerable to\nblack marketing\nduring supply crises
+      Each vulnerable to<br>black marketing<br>during supply crises
     1 Codebase
       Fork → 5 edits → Deploy
       Zero cost forever
@@ -428,10 +428,10 @@ gantt
 
 ```mermaid
 flowchart LR
-    A["🍴 Fork\nthe repo"] --> B["📝 Edit\n5 fields in\nconfig JSON"]
-    B --> C["🚀 Push\nto GitHub"]
-    C --> D["⚙️ Enable\nGitHub Pages"]
-    D --> E["✅ LIVE\nYour district\nis protected"]
+    A["🍴 Fork<br>the repo"] --> B["📝 Edit<br>5 fields in<br>config JSON"]
+    B --> C["🚀 Push<br>to GitHub"]
+    C --> D["⚙️ Enable<br>GitHub Pages"]
+    D --> E["✅ LIVE<br>Your district<br>is protected"]
 
     style A fill:#111318,stroke:#63b3ed,color:#e8eaf0
     style B fill:#111318,stroke:#ff8c42,color:#e8eaf0
@@ -483,14 +483,14 @@ flowchart TB
     end
 
     subgraph backend["☁️ BACKEND (All Free Tier)"]
-        GS["Google Sheets\n(Database)"]
-        EJ["EmailJS\n(200 emails/mo)"]
-        GM["Gemini 1.5 Flash\n(AI, 15 RPM)"]
-        CL["Cloudinary\n(Images, 25GB)"]
+        GS["Google Sheets<br>(Database)"]
+        EJ["EmailJS<br>(200 emails/mo)"]
+        GM["Gemini 1.5 Flash<br>(AI, 15 RPM)"]
+        CL["Cloudinary<br>(Images, 25GB)"]
     end
 
     subgraph hosting["🌐 HOSTING"]
-        GP["GitHub Pages\nFREE forever"]
+        GP["GitHub Pages<br>FREE forever"]
     end
 
     frontend --> GP
