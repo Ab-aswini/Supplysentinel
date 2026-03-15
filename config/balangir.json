@@ -27,14 +27,15 @@
   ],
 
   "hotspots": [
-    { "area": "Gandhi Chowk", "reports": 4, "level": "high" },
+    { "area": "Gandhi Chowk", "reports": 6, "level": "high" },
     { "area": "Bus Stand", "reports": 3, "level": "high" },
-    { "area": "Cantonment Rd", "reports": 3, "level": "high" },
+    { "area": "Cantonment Rd", "reports": 4, "level": "high" },
     { "area": "Court Road", "reports": 2, "level": "med" },
-    { "area": "Titilagarh Rd", "reports": 1, "level": "med" },
-    { "area": "Sargipali", "reports": 1, "level": "low" },
-    { "area": "Bibhutipara", "reports": 0, "level": "low" },
-    { "area": "Nehru Nagar", "reports": 1, "level": "low" }
+    { "area": "Titilagarh Rd", "reports": 2, "level": "med" },
+    { "area": "Sargipali", "reports": 2, "level": "med" },
+    { "area": "Bibhutipara", "reports": 1, "level": "low" },
+    { "area": "Nehru Nagar", "reports": 2, "level": "med" },
+    { "area": "Kesinga Road", "reports": 1, "level": "low" }
   ],
 
   "officialContacts": {
@@ -129,6 +130,85 @@
       "hoursAgo": 72,
       "upvotes": 3,
       "icon": "🫘"
+    },
+    {
+      "id": "r6",
+      "commodity": "Onion (1kg)",
+      "shop": "Balangir Sabji Mandi",
+      "area": "Gandhi Chowk",
+      "official": 40,
+      "reported": 65,
+      "severity": "moderate",
+      "notes": "All vendors in mandi charging same inflated price",
+      "hoursAgo": 4,
+      "upvotes": 5,
+      "icon": "🧅"
+    },
+    {
+      "id": "r7",
+      "commodity": "Tomato (1kg)",
+      "shop": "Roadside Vendor, Cantonment",
+      "area": "Cantonment Road",
+      "official": 35,
+      "reported": 80,
+      "severity": "severe",
+      "notes": "Photo evidence: price board shows Rs 80/kg for local tomatoes",
+      "hoursAgo": 6,
+      "upvotes": 8,
+      "icon": "🍅",
+      "hasPhoto": true
+    },
+    {
+      "id": "r8",
+      "commodity": "LPG Cylinder (14.2kg)",
+      "shop": "Indane Gas, Sargipali",
+      "area": "Sargipali",
+      "official": 939,
+      "reported": 2200,
+      "severity": "extreme",
+      "notes": "Black market sale in evening hours only, no booking required if paying Rs 2200",
+      "hoursAgo": 8,
+      "upvotes": 12,
+      "icon": "🔥"
+    },
+    {
+      "id": "r9",
+      "commodity": "Sugar (1kg)",
+      "shop": "Panda Grocery",
+      "area": "Nehru Nagar",
+      "official": 42,
+      "reported": 52,
+      "severity": "moderate",
+      "notes": "Mixing PDS sugar with market sugar and selling at higher rate",
+      "hoursAgo": 18,
+      "upvotes": 4,
+      "icon": "🍚"
+    },
+    {
+      "id": "r10",
+      "commodity": "Wheat Atta (1kg)",
+      "shop": "Shree Balaji Store",
+      "area": "Titilagarh Road",
+      "official": 35,
+      "reported": 42,
+      "severity": "moderate",
+      "notes": "Loose atta sold without branding at premium",
+      "hoursAgo": 36,
+      "upvotes": 2,
+      "icon": "🌾"
+    },
+    {
+      "id": "r11",
+      "commodity": "Mustard Oil (1L)",
+      "shop": "Kesinga Oil Traders",
+      "area": "Kesinga Road",
+      "official": 145,
+      "reported": 195,
+      "severity": "moderate",
+      "notes": "Claiming mustard seed price hike from Rajasthan",
+      "hoursAgo": 48,
+      "upvotes": 3,
+      "icon": "🫙"
     }
   ],
 

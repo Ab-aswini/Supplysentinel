@@ -1,0 +1,171 @@
+{
+  "district": "Sambalpur",
+  "state": "Odisha",
+  "country": "India",
+  "language": "en",
+  "liveUrl": "https://supplysentinel.netlify.app/?district=sambalpur",
+  "repoUrl": "https://github.com/Ab-aswini/Supplysentinel",
+
+  "crisis": {
+    "active": true,
+    "commodity": "Mustard Oil (1L)",
+    "officialPrice": 145,
+    "blackMarketPrice": 260,
+    "message": "Mustard oil shortage reported across Sambalpur district. Wholesale supply from Raipur disrupted due to transport strike. Market prices inflated 80% above MRP."
+  },
+
+  "areas": [
+    "Khetrajpur",
+    "Ainthapali",
+    "Modipara",
+    "Dhanupali",
+    "Budharaja",
+    "Bareipali",
+    "Sasan",
+    "Remed",
+    "Burla",
+    "Hirakud"
+  ],
+
+  "hotspots": [
+    { "area": "Khetrajpur", "reports": 8, "level": "high" },
+    { "area": "Ainthapali", "reports": 5, "level": "high" },
+    { "area": "Modipara", "reports": 4, "level": "high" },
+    { "area": "Dhanupali", "reports": 3, "level": "med" },
+    { "area": "Budharaja", "reports": 3, "level": "med" },
+    { "area": "Bareipali", "reports": 2, "level": "med" },
+    { "area": "Sasan", "reports": 1, "level": "low" },
+    { "area": "Remed", "reports": 1, "level": "low" },
+    { "area": "Burla", "reports": 2, "level": "med" },
+    { "area": "Hirakud", "reports": 1, "level": "low" }
+  ],
+
+  "officialContacts": {
+    "districtCollector": {
+      "name": "District Collector, Sambalpur",
+      "email": "sambalpur-collector@nic.in",
+      "role": "District Administration"
+    },
+    "civilSupplies": {
+      "name": "Civil Supplies Officer, Sambalpur",
+      "email": "",
+      "role": "Essential Commodities Regulation"
+    }
+  },
+
+  "consumerHelpline": "1800-11-4000",
+
+  "commodities": [
+    { "name": "LPG Cylinder (14.2kg)", "officialPrice": 939, "marketPrice": 1100, "unit": "cylinder", "icon": "\ud83d\udd25" },
+    { "name": "Mustard Oil (1L)", "officialPrice": 145, "marketPrice": 260, "unit": "liter", "icon": "\ud83e\udeed" },
+    { "name": "Sugar (1kg)", "officialPrice": 42, "marketPrice": 55, "unit": "kg", "icon": "\ud83c\udf5a" },
+    { "name": "Rice (1kg)", "officialPrice": 38, "marketPrice": 40, "unit": "kg", "icon": "\ud83c\udf3e" },
+    { "name": "Wheat Atta (1kg)", "officialPrice": 35, "marketPrice": 38, "unit": "kg", "icon": "\ud83c\udf3e" },
+    { "name": "Onion (1kg)", "officialPrice": 40, "marketPrice": 85, "unit": "kg", "icon": "\ud83e\uddc5" },
+    { "name": "Tomato (1kg)", "officialPrice": 35, "marketPrice": 90, "unit": "kg", "icon": "\ud83c\udf45" },
+    { "name": "Toor Dal (1kg)", "officialPrice": 155, "marketPrice": 190, "unit": "kg", "icon": "\ud83e\uded8" },
+    { "name": "Petrol (1L)", "officialPrice": 105, "marketPrice": 105, "unit": "liter", "icon": "\u26fd" }
+  ],
+
+  "seedReports": [
+    {
+      "id": "s1",
+      "commodity": "Mustard Oil (1L)",
+      "shop": "Sahu Oil Depot",
+      "area": "Khetrajpur",
+      "official": 145,
+      "reported": 260,
+      "severity": "severe",
+      "notes": "Says Raipur supply stopped, charging whatever they want",
+      "hoursAgo": 2,
+      "upvotes": 11,
+      "icon": "\ud83e\udeed"
+    },
+    {
+      "id": "s2",
+      "commodity": "Mustard Oil (1L)",
+      "shop": "Mahalaxmi Traders",
+      "area": "Ainthapali",
+      "official": 145,
+      "reported": 230,
+      "severity": "severe",
+      "notes": "Selling loose oil at inflated rate, no receipt",
+      "hoursAgo": 3,
+      "upvotes": 8,
+      "icon": "\ud83e\udeed"
+    },
+    {
+      "id": "s3",
+      "commodity": "Onion (1kg)",
+      "shop": "Maa Samaleswari Vegetables",
+      "area": "Modipara",
+      "official": 40,
+      "reported": 85,
+      "severity": "moderate",
+      "notes": "Claiming supply shortage from Nashik",
+      "hoursAgo": 5,
+      "upvotes": 6,
+      "icon": "\ud83e\uddc5"
+    },
+    {
+      "id": "s4",
+      "commodity": "Tomato (1kg)",
+      "shop": "Fresh Veggie Corner",
+      "area": "Dhanupali",
+      "official": 35,
+      "reported": 90,
+      "severity": "severe",
+      "notes": "Price doubled in one week",
+      "hoursAgo": 8,
+      "upvotes": 5,
+      "icon": "\ud83c\udf45"
+    },
+    {
+      "id": "s5",
+      "commodity": "LPG Cylinder (14.2kg)",
+      "shop": "Bharat Gas, Budharaja",
+      "area": "Budharaja",
+      "official": 939,
+      "reported": 1100,
+      "severity": "moderate",
+      "notes": "Charging delivery fee of Rs 161 extra",
+      "hoursAgo": 12,
+      "upvotes": 4,
+      "icon": "\ud83d\udd25"
+    },
+    {
+      "id": "s6",
+      "commodity": "Toor Dal (1kg)",
+      "shop": "Patel Kirana",
+      "area": "Khetrajpur",
+      "official": 155,
+      "reported": 195,
+      "severity": "moderate",
+      "notes": "Old stock being sold at new inflated prices",
+      "hoursAgo": 24,
+      "upvotes": 3,
+      "icon": "\ud83e\uded8"
+    },
+    {
+      "id": "s7",
+      "commodity": "Sugar (1kg)",
+      "shop": "Gupta General Store",
+      "area": "Burla",
+      "official": 42,
+      "reported": 55,
+      "severity": "moderate",
+      "notes": "Rationing to 2kg per customer at higher price",
+      "hoursAgo": 36,
+      "upvotes": 2,
+      "icon": "\ud83c\udf5a"
+    }
+  ],
+
+  "dataSources": {
+    "lpg": "https://ppac.gov.in",
+    "essentialCommodities": "https://consumeraffairs.nic.in/price-monitoring-cell",
+    "odishaCivilSupplies": "http://www.foododisha.in",
+    "nationalConsumerHelpline": "https://consumerhelpline.gov.in",
+    "odishaFoodSupplies": "https://foodsupply.odisha.gov.in"
+  }
+}

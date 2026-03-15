@@ -7,11 +7,11 @@
   "repoUrl": "https://github.com/your-username/Supplysentinel",
 
   "crisis": {
-    "active": false,
-    "commodity": "",
-    "officialPrice": 0,
-    "blackMarketPrice": 0,
-    "message": ""
+    "active": true,
+    "commodity": "LPG Cylinder (14.2kg)",
+    "officialPrice": 939,
+    "blackMarketPrice": 1500,
+    "message": "LPG cylinder shortage reported in Cuttack urban areas. Distributors claiming booking backlog of 3 weeks. Black market cylinders available at Rs 1,500."
   },
 
   "areas": [
@@ -28,14 +28,14 @@
   ],
 
   "hotspots": [
-    { "area": "Buxi Bazaar", "reports": 0, "level": "low" },
-    { "area": "Badambadi", "reports": 0, "level": "low" },
-    { "area": "College Square", "reports": 0, "level": "low" },
-    { "area": "Choudhury Bazaar", "reports": 0, "level": "low" },
-    { "area": "Mangalabag", "reports": 0, "level": "low" },
-    { "area": "Ranihat", "reports": 0, "level": "low" },
-    { "area": "Tulsipur", "reports": 0, "level": "low" },
-    { "area": "Naya Bazaar", "reports": 0, "level": "low" }
+    { "area": "Buxi Bazaar", "reports": 5, "level": "high" },
+    { "area": "Badambadi", "reports": 4, "level": "high" },
+    { "area": "College Square", "reports": 3, "level": "med" },
+    { "area": "Choudhury Bazaar", "reports": 3, "level": "med" },
+    { "area": "Mangalabag", "reports": 2, "level": "med" },
+    { "area": "Ranihat", "reports": 2, "level": "med" },
+    { "area": "Tulsipur", "reports": 1, "level": "low" },
+    { "area": "Naya Bazaar", "reports": 1, "level": "low" }
   ],
 
   "officialContacts": {
@@ -54,18 +54,84 @@
   "consumerHelpline": "1800-11-4000",
 
   "commodities": [
-    { "name": "LPG Cylinder (14.2kg)", "officialPrice": 939, "marketPrice": 939, "unit": "cylinder", "icon": "🔥" },
-    { "name": "Mustard Oil (1L)", "officialPrice": 145, "marketPrice": 145, "unit": "liter", "icon": "🫙" },
-    { "name": "Sugar (1kg)", "officialPrice": 42, "marketPrice": 42, "unit": "kg", "icon": "🍚" },
-    { "name": "Rice (1kg)", "officialPrice": 38, "marketPrice": 38, "unit": "kg", "icon": "🌾" },
-    { "name": "Wheat Atta (1kg)", "officialPrice": 35, "marketPrice": 35, "unit": "kg", "icon": "🌾" },
-    { "name": "Onion (1kg)", "officialPrice": 40, "marketPrice": 40, "unit": "kg", "icon": "🧅" },
-    { "name": "Tomato (1kg)", "officialPrice": 35, "marketPrice": 35, "unit": "kg", "icon": "🍅" },
-    { "name": "Toor Dal (1kg)", "officialPrice": 155, "marketPrice": 155, "unit": "kg", "icon": "🫘" },
+    { "name": "LPG Cylinder (14.2kg)", "officialPrice": 939, "marketPrice": 1500, "unit": "cylinder", "icon": "🔥" },
+    { "name": "Mustard Oil (1L)", "officialPrice": 145, "marketPrice": 175, "unit": "liter", "icon": "🫙" },
+    { "name": "Sugar (1kg)", "officialPrice": 42, "marketPrice": 48, "unit": "kg", "icon": "🍚" },
+    { "name": "Rice (1kg)", "officialPrice": 38, "marketPrice": 40, "unit": "kg", "icon": "🌾" },
+    { "name": "Wheat Atta (1kg)", "officialPrice": 35, "marketPrice": 36, "unit": "kg", "icon": "🌾" },
+    { "name": "Onion (1kg)", "officialPrice": 40, "marketPrice": 60, "unit": "kg", "icon": "🧅" },
+    { "name": "Tomato (1kg)", "officialPrice": 35, "marketPrice": 55, "unit": "kg", "icon": "🍅" },
+    { "name": "Toor Dal (1kg)", "officialPrice": 155, "marketPrice": 170, "unit": "kg", "icon": "🫘" },
     { "name": "Petrol (1L)", "officialPrice": 105, "marketPrice": 105, "unit": "liter", "icon": "⛽" }
   ],
 
-  "seedReports": [],
+  "seedReports": [
+    {
+      "id": "c1",
+      "commodity": "LPG Cylinder (14.2kg)",
+      "shop": "HP Gas, Buxi Bazaar",
+      "area": "Buxi Bazaar",
+      "official": 939,
+      "reported": 1500,
+      "severity": "severe",
+      "notes": "3-week waiting for booked cylinder, but available immediately for Rs 1500 cash",
+      "hoursAgo": 2,
+      "upvotes": 10,
+      "icon": "🔥"
+    },
+    {
+      "id": "c2",
+      "commodity": "LPG Cylinder (14.2kg)",
+      "shop": "Bharat Gas Badambadi",
+      "area": "Badambadi",
+      "official": 939,
+      "reported": 1400,
+      "severity": "severe",
+      "notes": "Delivery boy asking Rs 461 extra as tip + priority charge",
+      "hoursAgo": 4,
+      "upvotes": 7,
+      "icon": "🔥"
+    },
+    {
+      "id": "c3",
+      "commodity": "Onion (1kg)",
+      "shop": "Choudhury Bazaar Mandi",
+      "area": "Choudhury Bazaar",
+      "official": 40,
+      "reported": 60,
+      "severity": "moderate",
+      "notes": "Wholesale rate being charged at retail",
+      "hoursAgo": 5,
+      "upvotes": 4,
+      "icon": "🧅"
+    },
+    {
+      "id": "c4",
+      "commodity": "Mustard Oil (1L)",
+      "shop": "College Square Grocery",
+      "area": "College Square",
+      "official": 145,
+      "reported": 175,
+      "severity": "moderate",
+      "notes": "Repackaged loose oil sold as branded at higher rate",
+      "hoursAgo": 12,
+      "upvotes": 3,
+      "icon": "🫙"
+    },
+    {
+      "id": "c5",
+      "commodity": "Tomato (1kg)",
+      "shop": "Ranihat Vegetable Market",
+      "area": "Ranihat",
+      "official": 35,
+      "reported": 55,
+      "severity": "moderate",
+      "notes": "Quality is poor at this price, half rotten tomatoes mixed in",
+      "hoursAgo": 24,
+      "upvotes": 5,
+      "icon": "🍅"
+    }
+  ],
 
   "dataSources": {
     "lpg": "https://ppac.gov.in",

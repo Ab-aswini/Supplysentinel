@@ -1,0 +1,185 @@
+{
+  "district": "Ganjam",
+  "state": "Odisha",
+  "country": "India",
+  "language": "en",
+  "liveUrl": "https://supplysentinel.netlify.app/?district=ganjam",
+  "repoUrl": "https://github.com/Ab-aswini/Supplysentinel",
+
+  "crisis": {
+    "active": true,
+    "commodity": "Onion (1kg)",
+    "officialPrice": 40,
+    "blackMarketPrice": 120,
+    "message": "Onion prices have tripled in Ganjam district after supply disruption from Andhra Pradesh. Wholesale markets reporting severe shortage. Hoarding suspected in Berhampur mandi."
+  },
+
+  "areas": [
+    "Berhampur",
+    "Chhatrapur",
+    "Aska",
+    "Bhanjanagar",
+    "Hinjilicut",
+    "Khallikote",
+    "Digapahandi",
+    "Kabisuryanagar",
+    "Purushottampur",
+    "Gopalpur"
+  ],
+
+  "hotspots": [
+    { "area": "Berhampur", "reports": 9, "level": "high" },
+    { "area": "Aska", "reports": 5, "level": "high" },
+    { "area": "Chhatrapur", "reports": 4, "level": "high" },
+    { "area": "Bhanjanagar", "reports": 3, "level": "med" },
+    { "area": "Hinjilicut", "reports": 3, "level": "med" },
+    { "area": "Digapahandi", "reports": 2, "level": "med" },
+    { "area": "Khallikote", "reports": 2, "level": "med" },
+    { "area": "Kabisuryanagar", "reports": 1, "level": "low" },
+    { "area": "Purushottampur", "reports": 1, "level": "low" },
+    { "area": "Gopalpur", "reports": 1, "level": "low" }
+  ],
+
+  "officialContacts": {
+    "districtCollector": {
+      "name": "District Collector, Ganjam",
+      "email": "ganjam-collector@nic.in",
+      "role": "District Administration"
+    },
+    "civilSupplies": {
+      "name": "Civil Supplies Officer, Ganjam",
+      "email": "",
+      "role": "Essential Commodities Regulation"
+    }
+  },
+
+  "consumerHelpline": "1800-11-4000",
+
+  "commodities": [
+    { "name": "LPG Cylinder (14.2kg)", "officialPrice": 939, "marketPrice": 1200, "unit": "cylinder", "icon": "\ud83d\udd25" },
+    { "name": "Mustard Oil (1L)", "officialPrice": 145, "marketPrice": 170, "unit": "liter", "icon": "\ud83e\udeed" },
+    { "name": "Sugar (1kg)", "officialPrice": 42, "marketPrice": 46, "unit": "kg", "icon": "\ud83c\udf5a" },
+    { "name": "Rice (1kg)", "officialPrice": 38, "marketPrice": 42, "unit": "kg", "icon": "\ud83c\udf3e" },
+    { "name": "Wheat Atta (1kg)", "officialPrice": 35, "marketPrice": 37, "unit": "kg", "icon": "\ud83c\udf3e" },
+    { "name": "Onion (1kg)", "officialPrice": 40, "marketPrice": 120, "unit": "kg", "icon": "\ud83e\uddc5" },
+    { "name": "Tomato (1kg)", "officialPrice": 35, "marketPrice": 70, "unit": "kg", "icon": "\ud83c\udf45" },
+    { "name": "Toor Dal (1kg)", "officialPrice": 155, "marketPrice": 185, "unit": "kg", "icon": "\ud83e\uded8" },
+    { "name": "Petrol (1L)", "officialPrice": 105, "marketPrice": 105, "unit": "liter", "icon": "\u26fd" },
+    { "name": "Potato (1kg)", "officialPrice": 25, "marketPrice": 45, "unit": "kg", "icon": "\ud83e\udd54" }
+  ],
+
+  "seedReports": [
+    {
+      "id": "g1",
+      "commodity": "Onion (1kg)",
+      "shop": "Berhampur Main Mandi",
+      "area": "Berhampur",
+      "official": 40,
+      "reported": 120,
+      "severity": "extreme",
+      "notes": "Wholesale traders hoarding stock, releasing slowly at 3x price. Mandi godown full but showing empty to buyers.",
+      "hoursAgo": 1,
+      "upvotes": 16,
+      "icon": "\ud83e\uddc5"
+    },
+    {
+      "id": "g2",
+      "commodity": "Onion (1kg)",
+      "shop": "Srinivas Vegetables",
+      "area": "Aska",
+      "official": 40,
+      "reported": 100,
+      "severity": "severe",
+      "notes": "Selling only in 5kg minimum, refuses small quantities",
+      "hoursAgo": 2,
+      "upvotes": 9,
+      "icon": "\ud83e\uddc5"
+    },
+    {
+      "id": "g3",
+      "commodity": "Tomato (1kg)",
+      "shop": "Lakshmi Vegetable Market",
+      "area": "Berhampur",
+      "official": 35,
+      "reported": 70,
+      "severity": "moderate",
+      "notes": "Tomato price doubled, mixing rotten ones with good",
+      "hoursAgo": 3,
+      "upvotes": 7,
+      "icon": "\ud83c\udf45"
+    },
+    {
+      "id": "g4",
+      "commodity": "LPG Cylinder (14.2kg)",
+      "shop": "Indane Gas, Chhatrapur",
+      "area": "Chhatrapur",
+      "official": 939,
+      "reported": 1200,
+      "severity": "moderate",
+      "notes": "Delivery charge Rs 261 extra, total Rs 1200",
+      "hoursAgo": 6,
+      "upvotes": 5,
+      "icon": "\ud83d\udd25"
+    },
+    {
+      "id": "g5",
+      "commodity": "Potato (1kg)",
+      "shop": "Jena Cold Storage Outlet",
+      "area": "Bhanjanagar",
+      "official": 25,
+      "reported": 45,
+      "severity": "moderate",
+      "notes": "Cold storage potato released at premium during shortage",
+      "hoursAgo": 8,
+      "upvotes": 4,
+      "icon": "\ud83e\udd54"
+    },
+    {
+      "id": "g6",
+      "commodity": "Onion (1kg)",
+      "shop": "Roadside Vendor",
+      "area": "Hinjilicut",
+      "official": 40,
+      "reported": 90,
+      "severity": "severe",
+      "notes": "Even roadside vendors matching mandi's inflated prices",
+      "hoursAgo": 10,
+      "upvotes": 6,
+      "icon": "\ud83e\uddc5"
+    },
+    {
+      "id": "g7",
+      "commodity": "Toor Dal (1kg)",
+      "shop": "Mahalaxmi Grocers",
+      "area": "Digapahandi",
+      "official": 155,
+      "reported": 185,
+      "severity": "moderate",
+      "notes": "Blaming dal mill price hike",
+      "hoursAgo": 24,
+      "upvotes": 3,
+      "icon": "\ud83e\uded8"
+    },
+    {
+      "id": "g8",
+      "commodity": "Mustard Oil (1L)",
+      "shop": "Biswal Oil & Spices",
+      "area": "Chhatrapur",
+      "official": 145,
+      "reported": 170,
+      "severity": "moderate",
+      "notes": "Loose oil quality seems diluted at regular price",
+      "hoursAgo": 48,
+      "upvotes": 2,
+      "icon": "\ud83e\udeed"
+    }
+  ],
+
+  "dataSources": {
+    "lpg": "https://ppac.gov.in",
+    "essentialCommodities": "https://consumeraffairs.nic.in/price-monitoring-cell",
+    "odishaCivilSupplies": "http://www.foododisha.in",
+    "nationalConsumerHelpline": "https://consumerhelpline.gov.in",
+    "odishaFoodSupplies": "https://foodsupply.odisha.gov.in"
+  }
+}

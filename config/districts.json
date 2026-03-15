@@ -13,7 +13,28 @@
       "name": "Cuttack",
       "state": "Odisha",
       "config": "config/example-cuttack.json",
-      "active": false
+      "active": true
+    },
+    {
+      "id": "sambalpur",
+      "name": "Sambalpur",
+      "state": "Odisha",
+      "config": "config/sambalpur.json",
+      "active": true
+    },
+    {
+      "id": "koraput",
+      "name": "Koraput",
+      "state": "Odisha",
+      "config": "config/koraput.json",
+      "active": true
+    },
+    {
+      "id": "ganjam",
+      "name": "Ganjam",
+      "state": "Odisha",
+      "config": "config/ganjam.json",
+      "active": true
     }
   ]
 }
